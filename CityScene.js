@@ -7,15 +7,15 @@ export class CityScene extends Phaser.Scene{
 
     constructor(){
         super("CityScene");
-    }
 
-    platforms;
-    player;
-    cursors;
-    game_over = false;
-    controller = false;
-    physics;
-    shadow;
+        this.platforms;
+        this.player;
+        this.cursors;
+        this.game_over = false;
+        this.controller = false;
+        this.physics;
+        this.shadow;
+    }
 
     preload(){
 
@@ -69,8 +69,6 @@ export class CityScene extends Phaser.Scene{
         this.player = this.physics.add.sprite(120, 340, 'player_idle_front');
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
-        // hitbox = physics.add.sprite(120, 340, 'hitbox');
-        // hitbox.setSize(8,24).setOffset(4,0);
         this.player.can_get_hit = true;
         this.player.can_dash = true;
         this.player.is_dashing = false;
@@ -146,9 +144,9 @@ export class CityScene extends Phaser.Scene{
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.input.gamepad.once('connected', function (pad)
-            {
-                controller = pad;
-            })
+        {
+            controller = pad;
+        })
     };
     update(){
         this.shadow.x = this.player.x;
@@ -159,32 +157,79 @@ export class CityScene extends Phaser.Scene{
 
         if (this.game_over){return;}
 
-        // console.log(this.player.body.velocity)
-
-        if (this.cursors.left.isDown || this.controller.left)
+        if (this.cursors.up.isDown && this.cursors.left.isDown
+			&& (!this.cursors.down.isDown && !this.cursors.right.isDown)
+			|| this.controller.up && this.controller.left)
         {
             this.player.body.setVelocityX(-SPEED);
-            this.player.anims.play('run_left', true);
-            this.player.direction = "left"
-        }
-        else if (this.cursors.right.isDown || this.controller.right)
-        {
-            this.player.body.setVelocityX(SPEED);
-            this.player.anims.play('run_right', true);
-            this.player.direction = "right"
-        }
-
-        if (this.cursors.up.isDown || this.controller.up)
-        {
             this.player.body.setVelocityY(-SPEED);
             this.player.anims.play('run_back', true);
-            this.player.direction = "back"
+            this.player.direction = "back";
         }
-        else if (this.cursors.down.isDown || this.controller.down)
+        if (this.cursors.up.isDown && this.cursors.right.isDown
+			&& (!this.cursors.down.isDown && !this.cursors.left.isDown)
+			|| this.controller.up && this.controller.right)
         {
+            this.player.body.setVelocityX(SPEED);
+            this.player.body.setVelocityY(-SPEED);
+            this.player.anims.play('run_back', true);
+            this.player.direction = "back";
+        }
+
+		if (this.cursors.down.isDown && this.cursors.left.isDown
+			&& (!this.cursors.up.isDown && !this.cursors.right.isDown)
+			|| this.controller.down && this.controller.left)
+        {
+            this.player.body.setVelocityX(-SPEED);
             this.player.body.setVelocityY(SPEED);
             this.player.anims.play('run_front', true);
-            this.player.direction = "front"
+            this.player.direction = "front";
+        }
+        if (this.cursors.down.isDown && this.cursors.right.isDown
+			&& (!this.cursors.up.isDown && !this.cursors.left.isDown)
+			|| this.controller.down && this.controller.right)
+        {
+            this.player.body.setVelocityX(SPEED);
+            this.player.body.setVelocityY(SPEED);
+            this.player.anims.play('run_front', true);
+            this.player.direction = "front";
+        }
+		if (this.cursors.left.isDown
+			&& (!this.cursors.right.isDown && !this.cursors.down.isDown && !this.cursors.up.isDown)
+			|| this.controller.left)
+        {
+            this.player.body.setVelocityX(-SPEED);
+            this.player.body.setVelocityY(0);
+            this.player.anims.play('run_left', true);
+            this.player.direction = "left";
+        }
+        if (this.cursors.right.isDown
+			&& (!this.cursors.left.isDown && !this.cursors.down.isDown && !this.cursors.up.isDown)
+			|| this.controller.right)
+        {
+            this.player.body.setVelocityX(SPEED);
+            this.player.body.setVelocityY(0);
+            this.player.anims.play('run_right', true);
+            this.player.direction = "right";
+        }
+
+		if (this.cursors.up.isDown
+			&& (!this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown)
+			|| this.controller.up)
+        {
+            this.player.body.setVelocityX(0);
+            this.player.body.setVelocityY(-SPEED);
+            this.player.anims.play('run_back', true);
+            this.player.direction = "back";
+        }
+        if (this.cursors.down.isDown
+			&& (!this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown)
+			|| this.controller.down)
+        {
+            this.player.body.setVelocityX(0);
+            this.player.body.setVelocityY(SPEED);
+            this.player.anims.play('run_front', true);
+            this.player.direction = "front";
         }
         this.player.body.velocity.normalize().scale(SPEED);
 
@@ -194,16 +239,16 @@ export class CityScene extends Phaser.Scene{
             switch (this.player.direction)
             {
                 case "back":
-                    this.player.anims.play('idle_back');
+                    this.player.anims.play('idle_back', true);
                     break;
                 case "front":
-                    this.player.anims.play('idle_front');
+                    this.player.anims.play('idle_front', true);
                     break;
                 case "left":
-                    this.player.anims.play('idle_left');
+                    this.player.anims.play('idle_left', true);
                     break;
                 case "right":
-                    this.player.anims.play('idle_right');
+                    this.player.anims.play('idle_right', true);
                     break;
             }
         }
