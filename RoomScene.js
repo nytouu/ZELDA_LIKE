@@ -12,11 +12,14 @@ export class RoomScene extends Phaser.Scene{
         this.controller = false;
         this.physics;
         this.shadow;
+		this.canGoOut = true;
     }
 
     init(data)
     {
         this.entrance = data.entrance;
+		this.cameras.main.fadeIn(400, 0, 0, 0);
+		this.canGoOut = true;
     }
 
     preload(){
@@ -244,9 +247,16 @@ export class RoomScene extends Phaser.Scene{
         }
 
         if (this.player.x < 10)
-            this.scene.start('CityScene', {entrance: "room"});
-
-
+		{
+			if (this.canGoOut == true)
+			{
+				this.canGoOut = false;
+				this.cameras.main.fadeOut(400, 0, 0, 0);
+				this.time.delayedCall(500, () => {
+					this.scene.start('CityScene', {entrance: "room"});
+				})
+			}
+		}
         if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.player.direction);
     }
@@ -267,13 +277,6 @@ export class RoomScene extends Phaser.Scene{
         player.is_dashing = false;
     }
 
-    cd_can_get_hit(player)
-    {
-        player.can_get_hit = true;
-        if (!game_over)
-            player.setTint(0xffffff);
-    }
-
     player_dash(direction)
     {
         if (direction == "left"){}
@@ -282,48 +285,5 @@ export class RoomScene extends Phaser.Scene{
         setTimeout(this.cd_can_dash, 1000, this.player);
 
         console.log("dash")
-    }
-
-    kill_player()
-    {
-        this.player.anims.play('turn');
-        this.game_over = true;
-        this.player.setTint(0xff0000);
-        this.physics.pause();
-    }
-
-    damage_player()
-    {
-        if (this.player.can_get_hit)
-        {
-            this.player.can_get_hit = false;
-            this.player.setTint(0xff0000);
-            this.player.hp -= 1;
-            if (this.player.hp <= 0)
-                this.kill_player();
-            setTimeout(this.cd_can_get_hit, 1000, this.player)
-        }
-
-        switch (this.player.hp)
-        {
-            case 5:
-                this.lifebar.anims.play('life5', true);
-                break;
-            case 4:
-                this.lifebar.anims.play('life4', true);
-                break;
-            case 3:
-                this.lifebar.anims.play('life3', true);
-                break;
-            case 2:
-                this.lifebar.anims.play('life2', true);
-                break;
-            case 1:
-                this.lifebar.anims.play('life1', true);
-                break;
-            case 0:
-                this.lifebar.anims.play('life0', true);
-                break;
-        }
     }
 };

@@ -13,11 +13,14 @@ export class CityScene extends Phaser.Scene{
         this.controller = false;
         this.physics;
         this.shadow;
+		this.canGoOut = true;
     }
 
     init(data)
     {
         this.entrance = data.entrance;
+		this.cameras.main.fadeIn(400, 0, 0, 0);
+		this.canGoOut = true;
     }
 
     preload(){
@@ -258,7 +261,14 @@ export class CityScene extends Phaser.Scene{
         }
 
 		if (this.player.y >= 320 && this.player.x >= 200)
-            this.scene.start('RoomScene', {entrance: "city"});
+			if (this.canGoOut == true)
+			{
+				this.canGoOut = false;
+				this.cameras.main.fadeOut(400, 0, 0, 0);
+				this.time.delayedCall(500, () => {
+					this.scene.start('RoomScene', {entrance: "city"});
+				})
+			}
 
         if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.player.direction);
