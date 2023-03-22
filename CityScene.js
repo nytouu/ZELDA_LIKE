@@ -160,13 +160,28 @@ export class CityScene extends Phaser.Scene{
         })
     };
     update(){
+        if (this.game_over){return;}
+
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
         this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
         this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
-        if (this.game_over){return;}
+		if (this.player.y >= 320 && this.player.x >= 200)
+        {
+            if (this.canGoOut == true)
+            {
+                this.canGoOut = false;
+                this.cameras.main.fadeOut(400, 0, 0, 0);
+                this.time.delayedCall(500, () => {
+                    this.scene.start('RoomScene', {entrance: "city"});
+                })
+            }
+        }
+
+        if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
+            this.player_dash(this.dashx, this.dashy);
 
         if (!this.player.is_dashing)
         {
@@ -284,19 +299,6 @@ export class CityScene extends Phaser.Scene{
                 }
             }
         }
-
-		if (this.player.y >= 320 && this.player.x >= 200)
-			if (this.canGoOut == true)
-			{
-				this.canGoOut = false;
-				this.cameras.main.fadeOut(400, 0, 0, 0);
-				this.time.delayedCall(500, () => {
-					this.scene.start('RoomScene', {entrance: "city"});
-				})
-			}
-
-        if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
-            this.player_dash(this.dashx, this.dashy);
     }
 
     // Methods
@@ -329,7 +331,6 @@ export class CityScene extends Phaser.Scene{
             return
         else
         {
-            this.player.setTint(0xff00ff);
             this.player.is_dashing = true;
             this.player.can_dash = false;
 
@@ -340,6 +341,8 @@ export class CityScene extends Phaser.Scene{
 
             setTimeout(this.cd_dash, DASH_TIME, this.player);
             setTimeout(this.cd_can_dash, 600, this.player);
+
+            this.player.setTint(0x00ffff);
         }
     }
 

@@ -142,13 +142,28 @@ export class RoomScene extends Phaser.Scene{
         })
     };
     update(){
+        if (this.game_over){return;}
+
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
         this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 0.5) + (MAP_SIZE_X / 2);
         this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 0.5) + (MAP_SIZE_Y / 2);
 
-        if (this.game_over){return;}
+        if (this.player.x < 10)
+		{
+			if (this.canGoOut == true)
+			{
+				this.canGoOut = false;
+				this.cameras.main.fadeOut(400, 0, 0, 0);
+				this.time.delayedCall(500, () => {
+					this.scene.start('CityScene', {entrance: "room"});
+				})
+			}
+		}
+
+        if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
+            this.player_dash(this.player.direction);
 
         if (this.cursors.up.isDown && this.cursors.left.isDown
 			&& (!this.cursors.down.isDown && !this.cursors.right.isDown)
@@ -245,20 +260,6 @@ export class RoomScene extends Phaser.Scene{
                     break;
             }
         }
-
-        if (this.player.x < 10)
-		{
-			if (this.canGoOut == true)
-			{
-				this.canGoOut = false;
-				this.cameras.main.fadeOut(400, 0, 0, 0);
-				this.time.delayedCall(500, () => {
-					this.scene.start('CityScene', {entrance: "room"});
-				})
-			}
-		}
-        if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
-            this.player_dash(this.player.direction);
     }
 
     // Methods
