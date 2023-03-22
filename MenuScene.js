@@ -50,8 +50,8 @@ export class MenuScene extends Phaser.Scene{
         mx = this.input.mousePointer.x;
         my = this.input.mousePointer.y;
 
-        this.background.x = (((BG_SIZE) * (mx / BG_SIZE) - 200) * 0.04) + (BG_SIZE);
-        this.background.y = (((BG_SIZE / 1.5) * (my / BG_SIZE) - 200) * 0.04) + (BG_SIZE / 1.5);
+        this.background.x = (((BG_SIZE) * (mx / BG_SIZE)  * 0.01) + (BG_SIZE));
+        this.background.y = (((BG_SIZE) * (my / BG_SIZE)) * 0.01) + (BG_SIZE / 1.5);
 
         if (mx >= 320 && mx <= 700
          && my >= 210 && my <= 400)

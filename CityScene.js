@@ -1,5 +1,4 @@
 const SPEED = 80;
-const TILE_SIZE = 16;
 const MAP_SIZE_X = 272;
 const MAP_SIZE_Y = 384;
 
@@ -87,9 +86,6 @@ export class CityScene extends Phaser.Scene{
 
         this.physics.add.collider(this.player, city_map_above);
 
-        this.physics.world.setBounds(0, 0, MAP_SIZE_X, MAP_SIZE_Y);
-        this.cameras.main.setBounds(0, 0, MAP_SIZE_X, MAP_SIZE_Y);
-
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(3);
 
@@ -160,8 +156,8 @@ export class CityScene extends Phaser.Scene{
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
-        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X) - 200) * 0.06) + (MAP_SIZE_X / 2);
-        this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y) - 200) * 0.06) + (MAP_SIZE_Y / 2);
+        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
+        this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
         if (this.game_over){return;}
 

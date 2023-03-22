@@ -1,5 +1,4 @@
 const SPEED = 80;
-const TILE_SIZE = 16;
 const MAP_SIZE_X = 80;
 const MAP_SIZE_Y = 64;
 
@@ -73,9 +72,6 @@ export class RoomScene extends Phaser.Scene{
 
         this.physics.add.collider(this.player, room_layer);
 
-        this.physics.world.setBounds(0, 0, MAP_SIZE_X, MAP_SIZE_Y);
-        this.cameras.main.setBounds(0, 0, MAP_SIZE_X, MAP_SIZE_Y);
-
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(3);
 
@@ -146,8 +142,8 @@ export class RoomScene extends Phaser.Scene{
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
-        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X) - 200) * 0.06) + (MAP_SIZE_X / 2);
-        this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y) - 200) * 0.06) + (MAP_SIZE_Y / 2);
+        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 0.5) + (MAP_SIZE_X / 2);
+        this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 0.5) + (MAP_SIZE_Y / 2);
 
         if (this.game_over){return;}
 
