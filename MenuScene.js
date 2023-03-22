@@ -58,7 +58,7 @@ export class MenuScene extends Phaser.Scene{
         {
             this.button.anims.play('button_hover');
             if (this.click == true)
-                this.scene.start('CityScene');
+                this.scene.start('RoomScene');
         }
         else
         {

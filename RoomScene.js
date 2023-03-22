@@ -1,16 +1,15 @@
 const SPEED = 80;
 const TILE_SIZE = 16;
-const MAP_SIZE_X = 272;
-const MAP_SIZE_Y = 384;
+const MAP_SIZE_X = 80;
+const MAP_SIZE_Y = 64;
 
-export class CityScene extends Phaser.Scene{
+export class RoomScene extends Phaser.Scene{
 
     constructor(){
-        super("CityScene");
+        super("RoomScene");
 
         this.player;
         this.cursors;
-        this.game_over = false;
         this.controller = false;
         this.physics;
         this.shadow;
@@ -25,8 +24,7 @@ export class CityScene extends Phaser.Scene{
 
         this.load.image('background', 'assets/background.png');
         this.load.image('player_shadow', 'assets/player_shadow.png');
-        this.load.image('city_above', 'assets/city_above_player.png')
-        this.load.image('city_under', 'assets/city_under_player.png')
+        this.load.image('room', 'assets/room.png')
         this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
@@ -45,47 +43,35 @@ export class CityScene extends Phaser.Scene{
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('lifebar','assets/lifebar.png',
                     { frameWidth: 144, frameHeight: 32 });
-        this.load.tilemapTiledJSON("city_map", "assets/city_map.json");
+        this.load.tilemapTiledJSON("room_map", "assets/room_map.json");
     }
     create(){
         this.background = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background');
 
-        const level_map = this.add.tilemap("city_map");
-        const tiles_under = level_map.addTilesetImage(
-            "city_under",
-            "city_under"
+        const level_map = this.add.tilemap("room_map");
+        const tiles = level_map.addTilesetImage(
+            "room",
+            "room"
         );
-        const tiles_above = level_map.addTilesetImage(
-            "city_above",
-            "city_above"
-        );
-        const city_map_under = level_map.createLayer(
-            "under",
-            tiles_under
-        );
-        const city_map_above = level_map.createLayer(
-            "above",
-            tiles_above
+        const room_layer = level_map.createLayer(
+            "tiles",
+            tiles
         );
 
-		if (this.entrance == "room")
-			this.player = this.physics.add.sprite(180, 320, 'player_idle_front');
-		else
-			this.player = this.physics.add.sprite(120, 340, 'player_idle_front');
-        this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
+        if (this.entrance == "city")
+            this.player = this.physics.add.sprite(22, 32, 'player_idle_front');
+        else
+            this.player = this.physics.add.sprite(70, 32, 'player_idle_front');
+        this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
-        this.player.can_get_hit = true;
-        this.player.can_dash = true;
-        this.player.is_dashing = false;
-        this.player.hp = 5;
 
         const layer = this.add.layer();
-        layer.add([ city_map_under, this.shadow, this.player, city_map_above ])
+        layer.add([ room_layer, this.shadow, this.player ])
 
-        city_map_above.setCollisionByProperty({ isSolid: true });
+        room_layer.setCollisionByProperty({ isSolid: true });
         this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(this.player, city_map_above);
+        this.physics.add.collider(this.player, room_layer);
 
         this.physics.world.setBounds(0, 0, MAP_SIZE_X, MAP_SIZE_Y);
         this.cameras.main.setBounds(0, 0, MAP_SIZE_X, MAP_SIZE_Y);
@@ -144,8 +130,8 @@ export class CityScene extends Phaser.Scene{
             frameRate: 12,
             repeat: -1
         });
-        if (this.entrance == "room")
-            this.player.direction = "left";
+        if (this.entrance == "city")
+            this.player.direction = "right";
         else
             this.player.direction = "front";
 
@@ -261,8 +247,9 @@ export class CityScene extends Phaser.Scene{
             }
         }
 
-		if (this.player.y >= 320 && this.player.x >= 200)
-            this.scene.start('RoomScene', {entrance: "city"});
+        if (this.player.x < 10)
+            this.scene.start('CityScene', {entrance: "room"});
+
 
         if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.player.direction);
