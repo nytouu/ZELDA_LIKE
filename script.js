@@ -1,6 +1,7 @@
 import { CityScene as CityScene } from "./CityScene.js";
 import { MenuScene as MenuScene } from "./MenuScene.js";
 import { RoomScene as RoomScene } from "./RoomScene.js";
+import { PlainNorthScene as PlainNorthScene } from "./PlainNorthScene.js";
 
 var config =
 {
@@ -15,7 +16,7 @@ var config =
             debug: false
         }
     },
-    scene: [ MenuScene, RoomScene, CityScene ],
+    scene: [ MenuScene, RoomScene, CityScene, PlainNorthScene ],
     pixelArt: true,
     input:
     {

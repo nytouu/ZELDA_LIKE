@@ -1,13 +1,13 @@
 const SPEED = 80;
 const DASH_SPEED = 220;
 const DASH_TIME = 200;
-const MAP_SIZE_X = 272;
-const MAP_SIZE_Y = 384;
+const MAP_SIZE_X = 720;
+const MAP_SIZE_Y = 688;
 
-export class CityScene extends Phaser.Scene{
+export class PlainNorthScene extends Phaser.Scene{
 
     constructor(){
-        super("CityScene");
+        super("PlainNorthScene");
 
         this.player;
         this.dashx;
@@ -31,8 +31,7 @@ export class CityScene extends Phaser.Scene{
 
         this.load.image('background', 'assets/background.png');
         this.load.image('player_shadow', 'assets/player_shadow.png');
-        this.load.image('city_above', 'assets/city_above_player.png')
-        this.load.image('city_under', 'assets/city_under_player.png')
+        this.load.image('plain_north', 'assets/plain_north.png')
         this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
@@ -51,35 +50,25 @@ export class CityScene extends Phaser.Scene{
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('lifebar','assets/lifebar.png',
                     { frameWidth: 144, frameHeight: 32 });
-        this.load.tilemapTiledJSON("city_map", "assets/city_map.json");
+        this.load.tilemapTiledJSON("plain_north_map", "assets/plain_north_map.json");
     }
     create(){
         this.background = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background');
 
-        const level_map = this.add.tilemap("city_map");
-        const tiles_under = level_map.addTilesetImage(
-            "city_under",
-            "city_under"
+        const level_map = this.add.tilemap("plain_north_map");
+        const tiles_plain = level_map.addTilesetImage(
+            "plain_north",
+            "plain_north"
         );
-        const tiles_above = level_map.addTilesetImage(
-            "city_above",
-            "city_above"
-        );
-        const city_map_under = level_map.createLayer(
-            "under",
-            tiles_under
-        );
-        const city_map_above = level_map.createLayer(
-            "above",
-            tiles_above
+        const plain_map = level_map.createLayer(
+            "tiles",
+            tiles_plain
         );
 
-		if (this.entrance == "room")
-			this.player = this.physics.add.sprite(180, 320, 'player_idle_left');
-		else if (this.entrance == "plain_north")
-			this.player = this.physics.add.sprite(160, 30, 'player_idle_front');
+		if (this.entrance == "city")
+			this.player = this.physics.add.sprite(320, 350, 'player_idle_back');
 		else
-			this.player = this.physics.add.sprite(120, 340, 'player_idle_front');
+			this.player = this.physics.add.sprite(320, 350, 'player_idle_front');
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
         this.player.can_get_hit = true;
@@ -88,12 +77,12 @@ export class CityScene extends Phaser.Scene{
         this.player.hp = 5;
 
         const layer = this.add.layer();
-        layer.add([ city_map_under, this.shadow, this.player, city_map_above ])
+        layer.add([ plain_map, this.shadow, this.player ])
 
-        city_map_above.setCollisionByProperty({ isSolid: true });
+        plain_map.setCollisionByProperty({ isSolid: true });
         this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(this.player, city_map_above);
+        this.physics.add.collider(this.player, plain_map);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(3);
@@ -151,6 +140,8 @@ export class CityScene extends Phaser.Scene{
         });
         if (this.entrance == "room")
             this.player.direction = "left";
+        else if (this.entrance == "city")
+            this.player.direction = "back";
         else
             this.player.direction = "front";
 
@@ -170,28 +161,17 @@ export class CityScene extends Phaser.Scene{
         this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
         this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
-		if (this.player.y >= 320 && this.player.x >= 200)
-        {
-            if (this.canGoOut == true)
-            {
-                this.canGoOut = false;
-                this.cameras.main.fadeOut(400, 0, 0, 0);
-                this.time.delayedCall(500, () => {
-                    this.scene.start('RoomScene', {entrance: "city"});
-                })
-            }
-        }
-		else if (this.player.y <= 20)
-        {
-            if (this.canGoOut == true)
-            {
-                this.canGoOut = false;
-                this.cameras.main.fadeOut(400, 0, 0, 0);
-                this.time.delayedCall(500, () => {
-                    this.scene.start('PlainNorthScene', {entrance: "city"});
-                })
-            }
-        }
+		if (this.player.y >= 370 && this.player.x >= 300 && this.player.x <= 340)
+		        {
+		            if (this.canGoOut == true)
+		            {
+		                this.canGoOut = false;
+		                this.cameras.main.fadeOut(400, 0, 0, 0);
+		                this.time.delayedCall(500, () => {
+		                    this.scene.start('CityScene', {entrance: "plain_north"});
+		                })
+		            }
+		        }
 
         if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.dashx, this.dashy);
