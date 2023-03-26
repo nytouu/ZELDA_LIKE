@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.0" name="city_map" tilewidth="16" tileheight="16" tilecount="408" columns="17">
- <image source="city.png" width="272" height="384"/>
+ <image source="../assets/city.png" width="272" height="384"/>
  <tile id="8">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
