@@ -1,18 +1,20 @@
 { "compressionlevel":-1,
- "height":3,
+ "height":5,
  "infinite":false,
  "layers":[
         {
-         "data":[1, 2, 3, 4, 5,
-            6, 7, 8, 9, 10,
-            11, 12, 13, 14, 15],
-         "height":3,
+         "data":[1, 2, 3, 4, 5, 6,
+            7, 8, 9, 10, 11, 12,
+            13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23, 24,
+            25, 26, 27, 28, 29, 30],
+         "height":5,
          "id":1,
          "name":"tiles",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":5,
+         "width":6,
          "x":0,
          "y":0
         }],
@@ -24,19 +26,46 @@
  "tileheight":16,
  "tilesets":[
         {
-         "columns":5,
+         "columns":6,
          "firstgid":1,
          "image":"shop.png",
-         "imageheight":48,
-         "imagewidth":80,
+         "imageheight":80,
+         "imagewidth":96,
          "margin":0,
          "name":"shop",
          "spacing":0,
-         "tilecount":15,
+         "tilecount":30,
          "tileheight":16,
          "tiles":[
                 {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":1,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":2,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":3,
                  "properties":[
                         {
                          "name":"isSolid",
@@ -54,7 +83,26 @@
                         }]
                 }, 
                 {
+                 "id":5,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
                  "id":6,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":8,
                  "properties":[
                         {
                          "name":"isSolid",
@@ -72,7 +120,99 @@
                         }]
                 }, 
                 {
+                 "id":12,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":14,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":18,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":20,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":23,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":24,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":25,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":26,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":27,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":28,
+                 "properties":[
+                        {
+                         "name":"isSolid",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":29,
                  "properties":[
                         {
                          "name":"isSolid",
@@ -85,5 +225,5 @@
  "tilewidth":16,
  "type":"map",
  "version":"1.10",
- "width":5
+ "width":6
 }

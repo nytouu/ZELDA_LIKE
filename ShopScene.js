@@ -1,6 +1,6 @@
 const SPEED = 80;
-const MAP_SIZE_X = 80;
-const MAP_SIZE_Y = 48;
+const MAP_SIZE_X = 96;
+const MAP_SIZE_Y = 80;
 
 export class ShopScene extends Phaser.Scene{
 
@@ -61,7 +61,7 @@ export class ShopScene extends Phaser.Scene{
         );
 
         if (this.entrance == "city")
-            this.player = this.physics.add.sprite(64, 18, 'player_idle_left');
+            this.player = this.physics.add.sprite(72, 34, 'player_idle_left');
         else
             this.player = this.physics.add.sprite(40, 32, 'player_idle_front');
         this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
@@ -150,7 +150,7 @@ export class ShopScene extends Phaser.Scene{
         this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 0.5) + (MAP_SIZE_X / 2);
         this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 0.5) + (MAP_SIZE_Y / 2);
 
-        if (this.player.x > 70)
+        if (this.player.x > 86)
 		{
 			if (this.canGoOut == true)
 			{
