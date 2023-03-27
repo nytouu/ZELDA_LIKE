@@ -171,7 +171,7 @@ export class CityScene extends Phaser.Scene{
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
-        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
+        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 64 ;
         this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
 		if (this.player.y >= 320 && this.player.x >= 200)
