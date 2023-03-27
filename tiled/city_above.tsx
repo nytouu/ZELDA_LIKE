@@ -183,7 +183,7 @@
  </tile>
  <tile id="171">
   <properties>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="177">
@@ -208,7 +208,7 @@
  </tile>
  <tile id="188">
   <properties>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="194">

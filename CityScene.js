@@ -78,6 +78,8 @@ export class CityScene extends Phaser.Scene{
 			this.player = this.physics.add.sprite(180, 320, 'player_idle_left');
 		else if (this.entrance == "plain_north")
 			this.player = this.physics.add.sprite(160, 30, 'player_idle_front');
+		else if (this.entrance == "shop")
+			this.player = this.physics.add.sprite(22, 178, 'player_idle_right');
 		else
 			this.player = this.physics.add.sprite(120, 340, 'player_idle_front');
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
@@ -151,6 +153,8 @@ export class CityScene extends Phaser.Scene{
         });
         if (this.entrance == "room")
             this.player.direction = "left";
+		else if (this.entrance == "shop")
+            this.player.direction = "right";
         else
             this.player.direction = "front";
 
@@ -189,6 +193,17 @@ export class CityScene extends Phaser.Scene{
                 this.cameras.main.fadeOut(400, 0, 0, 0);
                 this.time.delayedCall(500, () => {
                     this.scene.start('PlainNorthScene', {entrance: "city"});
+                })
+            }
+        }
+		else if (this.player.x <= 10)
+        {
+            if (this.canGoOut == true)
+            {
+                this.canGoOut = false;
+                this.cameras.main.fadeOut(400, 0, 0, 0);
+                this.time.delayedCall(500, () => {
+                    this.scene.start('ShopScene', {entrance: "city"});
                 })
             }
         }
