@@ -8,7 +8,11 @@ import { ShopScene as ShopScene } from "./ShopScene.js";
 var config =
 {
     type: Phaser.AUTO,
-    width: 1024, height: 720,
+	scale: {
+        mode: Phaser.Scale.FIT,
+        width: 1920,
+        height: 1080
+    },
     physics:
     {
         default: 'arcade',
