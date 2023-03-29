@@ -1,5 +1,5 @@
 const SPEED = 80;
-const DASH_SPEED = 220;
+const DASH_SPEED = 260;
 const DASH_TIME = 200;
 const MAP_SIZE_X = 272;
 const MAP_SIZE_Y = 384;
