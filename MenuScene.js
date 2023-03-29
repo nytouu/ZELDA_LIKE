@@ -23,7 +23,7 @@ export class MenuScene extends Phaser.Scene{
         const layer = this.add.layer();
         layer.add([ this.background, this.button ])
 
-        this.cameras.main.setZoom(3);
+        this.cameras.main.setZoom(1);
 
         this.anims.create({
             key: 'button_idle',

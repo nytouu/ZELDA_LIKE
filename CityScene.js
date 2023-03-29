@@ -96,7 +96,7 @@ export class CityScene extends Phaser.Scene
         this.physics.add.collider(this.player, city_map_above);
 
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setZoom(3);
+        this.cameras.main.setZoom(4);
 
         this.anims.create({
             key : 'idle_back',

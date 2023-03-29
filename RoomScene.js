@@ -79,7 +79,7 @@ export class RoomScene extends Phaser.Scene{
         this.physics.add.collider(this.player, room_layer);
 
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setZoom(3);
+        this.cameras.main.setZoom(5);
 
         this.anims.create({
             key: 'idle_back',
