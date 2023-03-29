@@ -80,7 +80,10 @@ export class PlainNorthScene extends Phaser.Scene{
 		else if (this.entrance == "plain_south1")
 			this.player = this.physics.add.sprite(this.xpos, 500, 'player_idle_back');
 		else if (this.entrance == "plain_south2")
+		{
+			this.xpos < 436 ? this.xpos = 436 : this.xpos = this.xpos;
 			this.player = this.physics.add.sprite(this.xpos, 610, 'player_idle_back');
+		}
 		else
 			this.player = this.physics.add.sprite(320, 350, 'player_idle_front');
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
