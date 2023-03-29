@@ -29,9 +29,10 @@ export class PlainNorthScene extends Phaser.Scene{
 
     preload(){
 
-        this.load.image('background', 'assets/background.png');
+        this.load.image('background2', 'assets/background2.png');
         this.load.image('player_shadow', 'assets/player_shadow.png');
-        this.load.image('plain_north', 'assets/plain_north.png')
+        this.load.image('plain_north_under', 'assets/plain_north_under.png')
+        this.load.image('plain_north_above', 'assets/plain_north_above.png')
         this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
@@ -53,16 +54,24 @@ export class PlainNorthScene extends Phaser.Scene{
         this.load.tilemapTiledJSON("plain_north_map", "assets/plain_north_map.json");
     }
     create(){
-        this.background = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background');
+        this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
 
         const level_map = this.add.tilemap("plain_north_map");
-        const tiles_plain = level_map.addTilesetImage(
-            "plain_north",
-            "plain_north"
+        const tiles_above = level_map.addTilesetImage(
+            "plain_north_above",
+            "plain_north_above",
         );
-        const plain_map = level_map.createLayer(
-            "tiles",
-            tiles_plain
+        const tiles_under = level_map.addTilesetImage(
+            "plain_north_under",
+            "plain_north_under"
+        );
+        const map_above = level_map.createLayer(
+            "above",
+            tiles_above
+        );
+        const map_under = level_map.createLayer(
+            "under",
+            tiles_under,
         );
 
 		if (this.entrance == "city")
@@ -77,12 +86,14 @@ export class PlainNorthScene extends Phaser.Scene{
         this.player.hp = 5;
 
         const layer = this.add.layer();
-        layer.add([ plain_map, this.shadow, this.player ])
+        layer.add([ map_under, this.shadow, this.player, map_above ])
 
-        plain_map.setCollisionByProperty({ isSolid: true });
-        this.player.setCollideWorldBounds(true);
+        map_under.setCollisionByProperty({ isSolid: true });
+        map_above.setCollisionByProperty({ isSolid: true });
+        // this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(this.player, plain_map);
+        this.physics.add.collider(this.player, map_above);
+        this.physics.add.collider(this.player, map_under);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(3);
@@ -158,8 +169,8 @@ export class PlainNorthScene extends Phaser.Scene{
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
-        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
-        this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
+        this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
+        this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
 		if (this.player.y >= 370 && this.player.x >= 300 && this.player.x <= 340)
 		        {
