@@ -66,12 +66,32 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="110">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="119">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="120">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="145">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="146">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="155">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -86,6 +106,16 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="182">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="191">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="192">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
@@ -96,12 +126,32 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="218">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="227">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="228">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="253">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="254">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="263">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -131,12 +181,27 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="299">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="300">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="325">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="326">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="335">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -151,6 +216,16 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="362">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="371">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="372">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
@@ -161,12 +236,32 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="398">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="407">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="408">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="433">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="434">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="443">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -291,12 +386,22 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="470">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="502">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="505">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="506">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -341,12 +446,22 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="542">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="574">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="577">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="578">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -361,12 +476,22 @@
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
+ <tile id="614">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="646">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="649">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="650">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -402,6 +527,11 @@
   </properties>
  </tile>
  <tile id="721">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="722">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>
@@ -442,6 +572,11 @@
   </properties>
  </tile>
  <tile id="757">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="758">
   <properties>
    <property name="isSolid" type="bool" value="true"/>
   </properties>

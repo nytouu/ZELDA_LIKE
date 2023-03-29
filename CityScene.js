@@ -1,8 +1,8 @@
 const SPEED = 80;
 const DASH_SPEED = 260;
 const DASH_TIME = 200;
-const MAP_SIZE_X = 272;
-const MAP_SIZE_Y = 384;
+const MAP_SIZE_X = 320;
+const MAP_SIZE_Y = 416;
 
 export class CityScene extends Phaser.Scene
 {
@@ -72,11 +72,11 @@ export class CityScene extends Phaser.Scene
         const city_map_above = level_map.createLayer("above", tiles_above);
 
         if (this.entrance == "room")
-            this.player = this.physics.add.sprite(180, 320, 'player_idle_left');
+            this.player = this.physics.add.sprite(234, 352, 'player_idle_left');
         else if (this.entrance == "plain_north")
-            this.player = this.physics.add.sprite(160, 30, 'player_idle_front');
+            this.player = this.physics.add.sprite(208, 56, 'player_idle_front');
         else if (this.entrance == "shop")
-            this.player = this.physics.add.sprite(22, 178, 'player_idle_right');
+            this.player = this.physics.add.sprite(68, 208, 'player_idle_right');
         else
             this.player =
                 this.physics.add.sprite(120, 340, 'player_idle_front');
@@ -91,9 +91,11 @@ export class CityScene extends Phaser.Scene
         layer.add([ city_map_under, this.shadow, this.player, city_map_above ])
 
         city_map_above.setCollisionByProperty({isSolid : true});
-        this.player.setCollideWorldBounds(true);
+        city_map_under.setCollisionByProperty({isSolid : true});
+        // this.player.setCollideWorldBounds(true);
 
         this.physics.add.collider(this.player, city_map_above);
+        this.physics.add.collider(this.player, city_map_under);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(4);
@@ -184,7 +186,7 @@ export class CityScene extends Phaser.Scene
         this.background.y =
             (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100;
 
-        if (this.player.y >= 320 && this.player.x >= 200)
+        if (this.player.y >= 350 && this.player.x >= 248)
         {
             if (this.canGoOut == true)
             {
@@ -195,7 +197,7 @@ export class CityScene extends Phaser.Scene
                 })
             }
         }
-        else if (this.player.y <= 20)
+        else if (this.player.y <= 50)
         {
             if (this.canGoOut == true)
             {
@@ -206,7 +208,7 @@ export class CityScene extends Phaser.Scene
                 })
             }
         }
-        else if (this.player.x <= 10)
+        else if (this.player.x <= 52)
         {
             if (this.canGoOut == true)
             {

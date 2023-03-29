@@ -66,7 +66,7 @@ export class RoomScene extends Phaser.Scene{
         if (this.entrance == "city")
             this.player = this.physics.add.sprite(22, 48, 'player_idle_right');
         else
-            this.player = this.physics.add.sprite(70, 32, 'player_idle_front');
+            this.player = this.physics.add.sprite(70, 48, 'player_idle_front');
         this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
 
