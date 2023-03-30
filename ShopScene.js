@@ -1,5 +1,5 @@
 const SPEED = 80;
-const MAP_SIZE_X = 96;
+const MAP_SIZE_X = 112;
 const MAP_SIZE_Y = 80;
 
 export class ShopScene extends Phaser.Scene {
@@ -17,13 +17,13 @@ export class ShopScene extends Phaser.Scene {
 
     init(data) {
         this.entrance = data.entrance;
-        this.cameras.main.fadeIn(400, 0, 0, 0);
+        this.cameras.main.fadeIn(600, 0, 0, 0);
         this.canGoOut = true;
     }
 
     preload() {
 
-        this.load.image('background', 'assets/background.png');
+        this.load.image('background3', 'assets/background3.png');
         this.load.image('player_shadow', 'assets/player_shadow.png');
         this.load.image('shop', 'assets/shop.png')
         this.load.spritesheet('player_idle_back', 'assets/player_idle_back.png',
@@ -47,7 +47,7 @@ export class ShopScene extends Phaser.Scene {
         this.load.tilemapTiledJSON("shop_map", "assets/shop_map.json");
     }
     create() {
-        this.background = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background');
+        this.background3 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background3');
 
         const level_map = this.add.tilemap("shop_map");
         const tiles = level_map.addTilesetImage(
@@ -145,8 +145,8 @@ export class ShopScene extends Phaser.Scene {
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
-        this.background.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 0.5) + (MAP_SIZE_X / 2);
-        this.background.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 0.5) + (MAP_SIZE_Y / 2);
+        this.background3.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 0.5) + (MAP_SIZE_X / 2);
+        this.background3.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 0.5) + (MAP_SIZE_Y / 2);
 
         if (this.player.x > 86) {
             if (this.canGoOut == true) {
