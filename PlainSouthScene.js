@@ -23,7 +23,7 @@ export class PlainSouthScene extends Phaser.Scene{
     init(data)
     {
         this.entrance = data.entrance;
-		this.cameras.main.fadeIn(400, 0, 0, 0);
+		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.xpos = data.xpos;
     }
@@ -173,7 +173,7 @@ export class PlainSouthScene extends Phaser.Scene{
     update(){
         if (this.game_over){return;}
 
-		console.log(this.player.x, this.player.y);
+		// console.log(this.player.x, this.player.y);
 
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;

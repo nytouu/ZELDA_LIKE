@@ -11,6 +11,9 @@ export class MenuScene extends Phaser.Scene{
         this.controller = false;
     }
 
+	init(){
+		this.cameras.main.fadeIn(400, 0, 0, 0);
+	}
     preload(){
         this.load.image('background', 'assets/background.png');
         this.load.spritesheet('button','assets/play_button.png',
@@ -58,7 +61,10 @@ export class MenuScene extends Phaser.Scene{
         {
             this.button.anims.play('button_hover');
             if (this.click == true)
-                this.scene.start('RoomScene');
+                this.cameras.main.fadeOut(400, 0, 0, 0);
+                this.time.delayedCall(500, () => {
+					this.scene.start('RoomScene');
+                })
         }
         else
         {

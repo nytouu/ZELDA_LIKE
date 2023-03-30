@@ -19,9 +19,9 @@ export class RoomScene extends Phaser.Scene{
     {
         this.entrance = data.entrance;
 		if (this.entrance == "city")
-			this.cameras.main.fadeIn(400, 0, 0, 0);
+			this.cameras.main.fadeIn(600, 0, 0, 0);
 		else
-			this.cameras.main.fadeIn(1000, 0, 0, 0);
+			this.cameras.main.fadeIn(1500, 0, 0, 0);
 		this.canGoOut = true;
     }
 

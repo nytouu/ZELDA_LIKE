@@ -23,7 +23,7 @@ export class PlainNorthScene extends Phaser.Scene{
     init(data)
     {
         this.entrance = data.entrance;
-		this.cameras.main.fadeIn(400, 0, 0, 0);
+		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.xpos = data.xpos;
     }

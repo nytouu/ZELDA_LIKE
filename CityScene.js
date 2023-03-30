@@ -25,7 +25,7 @@ export class CityScene extends Phaser.Scene
     init(data)
     {
         this.entrance = data.entrance;
-        this.cameras.main.fadeIn(400, 0, 0, 0);
+        this.cameras.main.fadeIn(600, 0, 0, 0);
         this.canGoOut = true;
     }
 
@@ -181,6 +181,8 @@ export class CityScene extends Phaser.Scene
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
 
+		// console.log(this.player.x, this.player.y);
+
         this.background.x =
             (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 64;
         this.background.y =
@@ -202,8 +204,8 @@ export class CityScene extends Phaser.Scene
             if (this.canGoOut == true)
             {
                 this.canGoOut = false;
-                this.cameras.main.fadeOut(400, 0, 0, 0);
-                this.time.delayedCall(500, () => {
+                this.cameras.main.fadeOut(600, 0, 0, 0);
+                this.time.delayedCall(700, () => {
                     this.scene.start('PlainNorthScene', {entrance : "city"});
                 })
             }
@@ -213,8 +215,8 @@ export class CityScene extends Phaser.Scene
             if (this.canGoOut == true)
             {
                 this.canGoOut = false;
-                this.cameras.main.fadeOut(400, 0, 0, 0);
-                this.time.delayedCall(500, () => {
+                this.cameras.main.fadeOut(600, 0, 0, 0);
+                this.time.delayedCall(700, () => {
                     this.scene.start('ShopScene', {entrance : "city"});
                 })
             }
