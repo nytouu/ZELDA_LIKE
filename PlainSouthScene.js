@@ -18,6 +18,7 @@ export class PlainSouthScene extends Phaser.Scene{
         this.physics;
         this.shadow;
 		this.canGoOut = true;
+		this.layer;
     }
 
     init(data)
@@ -26,6 +27,8 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.xpos = data.xpos;
+
+		this.spider_once = false;
     }
 
     preload(){
@@ -34,6 +37,12 @@ export class PlainSouthScene extends Phaser.Scene{
         this.load.image('player_shadow', 'assets/player_shadow.png');
         this.load.image('plain_south_under', 'assets/plain_south_under.png')
         this.load.image('plain_south_above', 'assets/plain_south_above.png')
+
+		this.load.spritesheet('mini_spider_idle','assets/mini_spider_idle.png',
+			{ frameWidth: 18, frameHeight: 18 });
+		this.load.spritesheet('mini_spider_run','assets/mini_spider_run.png',
+			{ frameWidth: 18, frameHeight: 18 });
+
         this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
@@ -57,7 +66,8 @@ export class PlainSouthScene extends Phaser.Scene{
     create(){
         this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
 
-		this.dash_trail = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
+		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
         const level_map = this.add.tilemap("plain_south_map");
         const tiles_above = level_map.addTilesetImage(
@@ -101,6 +111,7 @@ export class PlainSouthScene extends Phaser.Scene{
             this.current_anim = "player_idle_front";
             this.player.direction = "front";
 		}
+
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
         this.player.can_get_hit = true;
@@ -117,6 +128,13 @@ export class PlainSouthScene extends Phaser.Scene{
 
         this.physics.add.collider(this.player, map_above);
         this.physics.add.collider(this.player, map_under);
+
+		this.physics.add.collider(this.spiders, map_under);
+		this.physics.add.collider(this.spiders, map_above);
+
+        this.physics.add.collider(this.spiders, this.spiders);
+
+        this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(4);
@@ -170,6 +188,19 @@ export class PlainSouthScene extends Phaser.Scene{
             key: 'run_left',
             frames: this.anims.generateFrameNumbers('player_run_left', {start:0,end:11}),
             frameRate: 12,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'spider_idle',
+            frames: this.anims.generateFrameNumbers('mini_spider_idle', {start:0,end:3}),
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'spider_run',
+            frames: this.anims.generateFrameNumbers('mini_spider_run', {start:0,end:3}),
+            frameRate: 4,
             repeat: -1
         });
 
@@ -232,6 +263,32 @@ export class PlainSouthScene extends Phaser.Scene{
                     silhouette.setTintFill(Phaser.Display.Color.GetColor(valueRB, valueG, valueRB));   
                 }
             });
+		}
+
+		if (this.player.x <= 120 && this.player.y >= 320 && !this.spider_once)
+		{
+			this.spiders.create(480, 280, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(110, 70, 'mini_spider_idle').anims.play('spider_run', true);
+
+			this.spiders.children.each(function (spider) {
+				this.layer.add(spider);
+				this.layer.moveDown(spider);
+				this.layer.moveDown(spider);
+			}, this)
+
+			this.spider_once = true;
+			console.log("spawned mob");
+		}
+
+		if (this.spider_once)
+		{
+			this.spiders.children.each(function (spider) {
+				this.physics.moveToObject(spider, this.player, 50);
+				if (spider.x < this.player.x)
+					spider.setFlipX(true);
+				else
+					spider.setFlipX(false);
+			}, this)
 		}
 
 		this.dash_trail.children.each(function (silhouette) {
@@ -390,7 +447,7 @@ export class PlainSouthScene extends Phaser.Scene{
     cd_can_get_hit(player)
     {
         player.can_get_hit = true;
-        if (!game_over)
+        if (!this.game_over)
             player.setTint(0xffffff);
     }
 
@@ -417,7 +474,7 @@ export class PlainSouthScene extends Phaser.Scene{
 
     kill_player()
     {
-        this.player.anims.play('turn');
+        this.player.anims.play('player_idle_front');
         this.game_over = true;
         this.player.setTint(0xff0000);
         this.physics.pause();
@@ -435,26 +492,26 @@ export class PlainSouthScene extends Phaser.Scene{
             setTimeout(this.cd_can_get_hit, 1000, this.player)
         }
 
-        switch (this.player.hp)
-        {
-            case 5:
-                this.lifebar.anims.play('life5', true);
-                break;
-            case 4:
-                this.lifebar.anims.play('life4', true);
-                break;
-            case 3:
-                this.lifebar.anims.play('life3', true);
-                break;
-            case 2:
-                this.lifebar.anims.play('life2', true);
-                break;
-            case 1:
-                this.lifebar.anims.play('life1', true);
-                break;
-            case 0:
-                this.lifebar.anims.play('life0', true);
-                break;
-        }
+        // switch (this.player.hp)
+        // {
+        //     case 5:
+        //         this.lifebar.anims.play('life5', true);
+        //         break;
+        //     case 4:
+        //         this.lifebar.anims.play('life4', true);
+        //         break;
+        //     case 3:
+        //         this.lifebar.anims.play('life3', true);
+        //         break;
+        //     case 2:
+        //         this.lifebar.anims.play('life2', true);
+        //         break;
+        //     case 1:
+        //         this.lifebar.anims.play('life1', true);
+        //         break;
+        //     case 0:
+        //         this.lifebar.anims.play('life0', true);
+        //         break;
+        // }
     }
 };
