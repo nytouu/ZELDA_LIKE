@@ -57,6 +57,8 @@ export class PlainSouthScene extends Phaser.Scene{
     create(){
         this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
 
+		this.dash_trail = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+
         const level_map = this.add.tilemap("plain_south_map");
         const tiles_above = level_map.addTilesetImage(
             "plain_south_above",
@@ -76,13 +78,29 @@ export class PlainSouthScene extends Phaser.Scene{
         );
 
 		if (this.entrance == "city")
+		{
 			this.player = this.physics.add.sprite(320, 350, 'player_idle_back');
+            this.current_anim = "player_idle_back";
+            this.player.direction = "back";
+		}
 		else if (this.entrance == "plain_north1")
-			this.player = this.physics.add.sprite(this.xpos, 56, 'player_idle_back');
+		{
+			this.player = this.physics.add.sprite(this.xpos, 56, 'player_idle_front');
+            this.current_anim = "player_idle_front";
+            this.player.direction = "front";
+		}
 		else if (this.entrance == "plain_north2")
-			this.player = this.physics.add.sprite(this.xpos, 214, 'player_idle_back');
+		{
+			this.player = this.physics.add.sprite(this.xpos, 214, 'player_idle_front');
+            this.current_anim = "player_idle_front";
+            this.player.direction = "front";
+		}
 		else
+		{
 			this.player = this.physics.add.sprite(320, 350, 'player_idle_front');
+            this.current_anim = "player_idle_front";
+            this.player.direction = "front";
+		}
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
         this.player.can_get_hit = true;
@@ -154,14 +172,6 @@ export class PlainSouthScene extends Phaser.Scene{
             frameRate: 12,
             repeat: -1
         });
-        if (this.entrance == "room")
-            this.player.direction = "left";
-        else if (this.entrance == "city")
-            this.player.direction = "back";
-        // else if (this.entrance == "plain_north1" || this.entrance == "plain_north2")
-        //     this.player.direction = "front";
-        else
-            this.player.direction = "front";
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -207,96 +217,131 @@ export class PlainSouthScene extends Phaser.Scene{
         if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.dashx, this.dashy);
 
+		if (this.player.is_dashing)
+		{
+			const silhouette = this.dash_trail.create(this.player.x, this.player.y, this.current_anim).setPushable(false).setDepth(100).setAlpha(0.8);
+			this.tweens.addCounter({
+                from: 255,
+                to: 0,
+                duration: 300,
+                onUpdate: function (tween)
+                {
+                    const valueRB = Math.floor(tween.getValue());
+                    const valueG = 115 + Math.floor(Math.floor(tween.getValue())/1.82);
+    
+                    silhouette.setTintFill(Phaser.Display.Color.GetColor(valueRB, valueG, valueRB));   
+                }
+            });
+		}
+
+		this.dash_trail.children.each(function (silhouette) {
+			silhouette.alpha -= 0.05;
+			if(silhouette.alpha <= 0)
+				silhouette.destroy();
+		})
+
         if (!this.player.is_dashing)
         {
-            if (this.cursors.up.isDown && this.cursors.left.isDown
-                && (!this.cursors.down.isDown && !this.cursors.right.isDown)
-                || this.controller.up && this.controller.left)
+            if (this.cursors.up.isDown && this.cursors.left.isDown &&
+                    (!this.cursors.down.isDown && !this.cursors.right.isDown) ||
+                this.controller.up && this.controller.left)
             {
                 this.player.body.setVelocityX(-SPEED);
                 this.player.body.setVelocityY(-SPEED);
                 this.dashx = -1;
                 this.dashy = -1;
                 this.player.anims.play('run_back', true);
+                this.current_anim = "player_run_back";
                 this.player.direction = "back";
             }
-            if (this.cursors.up.isDown && this.cursors.right.isDown
-                && (!this.cursors.down.isDown && !this.cursors.left.isDown)
-                || this.controller.up && this.controller.right)
+            if (this.cursors.up.isDown && this.cursors.right.isDown &&
+                    (!this.cursors.down.isDown && !this.cursors.left.isDown) ||
+                this.controller.up && this.controller.right)
             {
                 this.player.body.setVelocityX(SPEED);
                 this.player.body.setVelocityY(-SPEED);
                 this.dashx = 1;
                 this.dashy = -1;
                 this.player.anims.play('run_back', true);
+                this.current_anim = "player_run_back";
                 this.player.direction = "back";
             }
 
-            if (this.cursors.down.isDown && this.cursors.left.isDown
-                && (!this.cursors.up.isDown && !this.cursors.right.isDown)
-                || this.controller.down && this.controller.left)
+            if (this.cursors.down.isDown && this.cursors.left.isDown &&
+                    (!this.cursors.up.isDown && !this.cursors.right.isDown) ||
+                this.controller.down && this.controller.left)
             {
                 this.player.body.setVelocityX(-SPEED);
                 this.player.body.setVelocityY(SPEED);
                 this.dashx = -1;
                 this.dashy = 1;
                 this.player.anims.play('run_front', true);
+                this.current_anim = "player_run_front";
                 this.player.direction = "front";
             }
-            if (this.cursors.down.isDown && this.cursors.right.isDown
-                && (!this.cursors.up.isDown && !this.cursors.left.isDown)
-                || this.controller.down && this.controller.right)
+            if (this.cursors.down.isDown && this.cursors.right.isDown &&
+                    (!this.cursors.up.isDown && !this.cursors.left.isDown) ||
+                this.controller.down && this.controller.right)
             {
                 this.player.body.setVelocityX(SPEED);
                 this.player.body.setVelocityY(SPEED);
                 this.dashx = 1;
                 this.dashy = 1;
                 this.player.anims.play('run_front', true);
+                this.current_anim = "player_run_front";
                 this.player.direction = "front";
             }
-            if (this.cursors.left.isDown
-                && (!this.cursors.right.isDown && !this.cursors.down.isDown && !this.cursors.up.isDown)
-                || this.controller.left)
+            if (this.cursors.left.isDown &&
+                    (!this.cursors.right.isDown && !this.cursors.down.isDown &&
+                     !this.cursors.up.isDown) ||
+                this.controller.left)
             {
                 this.player.body.setVelocityX(-SPEED);
                 this.player.body.setVelocityY(0);
                 this.dashx = -1;
                 this.dashy = 0;
                 this.player.anims.play('run_left', true);
+                this.current_anim = "player_run_left";
                 this.player.direction = "left";
             }
-            if (this.cursors.right.isDown
-                && (!this.cursors.left.isDown && !this.cursors.down.isDown && !this.cursors.up.isDown)
-                || this.controller.right)
+            if (this.cursors.right.isDown &&
+                    (!this.cursors.left.isDown && !this.cursors.down.isDown &&
+                     !this.cursors.up.isDown) ||
+                this.controller.right)
             {
                 this.player.body.setVelocityX(SPEED);
                 this.player.body.setVelocityY(0);
                 this.dashx = 1;
                 this.dashy = 0;
                 this.player.anims.play('run_right', true);
+                this.current_anim = "player_run_right";
                 this.player.direction = "right";
             }
 
-            if (this.cursors.up.isDown
-                && (!this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown)
-                || this.controller.up)
+            if (this.cursors.up.isDown &&
+                    (!this.cursors.down.isDown && !this.cursors.left.isDown &&
+                     !this.cursors.right.isDown) ||
+                this.controller.up)
             {
                 this.player.body.setVelocityX(0);
                 this.player.body.setVelocityY(-SPEED);
                 this.dashx = 0;
                 this.dashy = -1;
                 this.player.anims.play('run_back', true);
+                this.current_anim = "player_run_back";
                 this.player.direction = "back";
             }
-            if (this.cursors.down.isDown
-                && (!this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown)
-                || this.controller.down)
+            if (this.cursors.down.isDown &&
+                    (!this.cursors.up.isDown && !this.cursors.left.isDown &&
+                     !this.cursors.right.isDown) ||
+                this.controller.down)
             {
                 this.player.body.setVelocityX(0);
                 this.player.body.setVelocityY(SPEED);
                 this.dashx = 0;
                 this.dashy = 1;
                 this.player.anims.play('run_front', true);
+                this.current_anim = "player_run_front";
                 this.player.direction = "front";
             }
             this.player.body.velocity.normalize().scale(SPEED);

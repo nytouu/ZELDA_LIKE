@@ -64,9 +64,17 @@ export class RoomScene extends Phaser.Scene{
         );
 
         if (this.entrance == "city")
-            this.player = this.physics.add.sprite(22, 48, 'player_idle_right');
+		{
+			this.player = this.physics.add.sprite(22, 48, 'player_idle_right');
+			this.player.current_anim = "player_idle_right";
+			this.player.direction = "right";
+		}
         else
-            this.player = this.physics.add.sprite(70, 48, 'player_idle_front');
+		{
+			this.player = this.physics.add.sprite(70, 48, 'player_idle_front');
+			this.player.current_anim = "player_idle_front";
+			this.player.direction = "front";
+		}
         this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
 

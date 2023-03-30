@@ -63,6 +63,8 @@ export class CityScene extends Phaser.Scene
         this.background =
             this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background');
 
+		this.dash_trail = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+
         const level_map = this.add.tilemap("city_map");
         const tiles_under =
             level_map.addTilesetImage("city_under", "city_under");
@@ -72,14 +74,30 @@ export class CityScene extends Phaser.Scene
         const city_map_above = level_map.createLayer("above", tiles_above);
 
         if (this.entrance == "room")
-            this.player = this.physics.add.sprite(234, 352, 'player_idle_left');
+        {
+            this.player = this.physics.add.sprite(234, 352, this.current_anim);
+            this.current_anim = "player_idle_left";
+            this.player.direction = "left";
+        }
         else if (this.entrance == "plain_north")
-            this.player = this.physics.add.sprite(208, 56, 'player_idle_front');
+        {
+            this.player = this.physics.add.sprite(208, 56, this.current_anim);
+            this.current_anim = "player_idle_front";
+            this.player.direction = "front";
+        }
         else if (this.entrance == "shop")
-            this.player = this.physics.add.sprite(68, 208, 'player_idle_right');
+        {
+            this.player = this.physics.add.sprite(68, 208, this.current_anim);
+            this.current_anim = "player_idle_right";
+            this.player.direction = "right";
+        }
         else
-            this.player =
-                this.physics.add.sprite(120, 340, 'player_idle_front');
+        {
+            this.player = this.physics.add.sprite(120, 340, this.current_anim);
+            this.current_anim = "player_idle_front";
+            this.player.direction = "front";
+        }
+
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8, 14).setOffset(12, 16);
         this.player.can_get_hit = true;
@@ -159,12 +177,6 @@ export class CityScene extends Phaser.Scene
             frameRate : 12,
             repeat : -1
         });
-        if (this.entrance == "room")
-            this.player.direction = "left";
-        else if (this.entrance == "shop")
-            this.player.direction = "right";
-        else
-            this.player.direction = "front";
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -226,6 +238,29 @@ export class CityScene extends Phaser.Scene
             (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.dashx, this.dashy);
 
+		if (this.player.is_dashing)
+		{
+			const silhouette = this.dash_trail.create(this.player.x, this.player.y, this.current_anim).setPushable(false).setDepth(100).setAlpha(0.8);
+			this.tweens.addCounter({
+                from: 255,
+                to: 0,
+                duration: 300,
+                onUpdate: function (tween)
+                {
+                    const valueRB = Math.floor(tween.getValue());
+                    const valueG = 115 + Math.floor(Math.floor(tween.getValue())/1.82);
+    
+                    silhouette.setTintFill(Phaser.Display.Color.GetColor(valueRB, valueG, valueRB));   
+                }
+            });
+		}
+
+		this.dash_trail.children.each(function (silhouette) {
+			silhouette.alpha -= 0.05;
+			if(silhouette.alpha <= 0)
+				silhouette.destroy();
+		})
+
         if (!this.player.is_dashing)
         {
             if (this.cursors.up.isDown && this.cursors.left.isDown &&
@@ -237,6 +272,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = -1;
                 this.dashy = -1;
                 this.player.anims.play('run_back', true);
+                this.current_anim = "player_run_back";
                 this.player.direction = "back";
             }
             if (this.cursors.up.isDown && this.cursors.right.isDown &&
@@ -248,6 +284,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = 1;
                 this.dashy = -1;
                 this.player.anims.play('run_back', true);
+                this.current_anim = "player_run_back";
                 this.player.direction = "back";
             }
 
@@ -260,6 +297,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = -1;
                 this.dashy = 1;
                 this.player.anims.play('run_front', true);
+                this.current_anim = "player_run_front";
                 this.player.direction = "front";
             }
             if (this.cursors.down.isDown && this.cursors.right.isDown &&
@@ -271,6 +309,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = 1;
                 this.dashy = 1;
                 this.player.anims.play('run_front', true);
+                this.current_anim = "player_run_front";
                 this.player.direction = "front";
             }
             if (this.cursors.left.isDown &&
@@ -283,6 +322,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = -1;
                 this.dashy = 0;
                 this.player.anims.play('run_left', true);
+                this.current_anim = "player_run_left";
                 this.player.direction = "left";
             }
             if (this.cursors.right.isDown &&
@@ -295,6 +335,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = 1;
                 this.dashy = 0;
                 this.player.anims.play('run_right', true);
+                this.current_anim = "player_run_right";
                 this.player.direction = "right";
             }
 
@@ -308,6 +349,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = 0;
                 this.dashy = -1;
                 this.player.anims.play('run_back', true);
+                this.current_anim = "player_run_back";
                 this.player.direction = "back";
             }
             if (this.cursors.down.isDown &&
@@ -320,6 +362,7 @@ export class CityScene extends Phaser.Scene
                 this.dashx = 0;
                 this.dashy = 1;
                 this.player.anims.play('run_front', true);
+                this.current_anim = "player_run_front";
                 this.player.direction = "front";
             }
             this.player.body.velocity.normalize().scale(SPEED);
@@ -385,7 +428,7 @@ export class CityScene extends Phaser.Scene
 			setTimeout(this.cd_dash, DASH_TIME, this.player);
 			setTimeout(this.cd_can_dash, 600, this.player);
 
-			this.player.setTint(0x00ffff);
+			// this.player.setTint(0x00ffff);
 		}
     }
 
