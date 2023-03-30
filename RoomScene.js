@@ -8,6 +8,8 @@ export class RoomScene extends Phaser.Scene{
         super("RoomScene");
 
         this.player;
+		this.lifebar;
+		this.hp = 5;
         this.cursors;
         this.controller = false;
         this.physics;
@@ -19,7 +21,10 @@ export class RoomScene extends Phaser.Scene{
     {
         this.entrance = data.entrance;
 		if (this.entrance == "city")
+		{
+			this.hp = data.hp;
 			this.cameras.main.fadeIn(600, 0, 0, 0);
+		}
 		else
 			this.cameras.main.fadeIn(1500, 0, 0, 0);
 		this.canGoOut = true;
@@ -47,7 +52,7 @@ export class RoomScene extends Phaser.Scene{
         this.load.spritesheet('player_run_left','assets/player_run_left.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('lifebar','assets/lifebar.png',
-                    { frameWidth: 144, frameHeight: 32 });
+                    { frameWidth: 64, frameHeight: 16 });
         this.load.tilemapTiledJSON("room_map", "assets/room_map.json");
     }
     create(){
@@ -80,6 +85,10 @@ export class RoomScene extends Phaser.Scene{
 
         const layer = this.add.layer();
         layer.add([ room_layer, this.shadow, this.player ])
+
+		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
+		this.lifebar.body.allowGravity = false;
+		// this.lifebar.setScrollFactor(0,0);
 
         room_layer.setCollisionByProperty({ isSolid: true });
         this.player.setCollideWorldBounds(true);
@@ -140,6 +149,66 @@ export class RoomScene extends Phaser.Scene{
             frameRate: 12,
             repeat: -1
         });
+
+		this.anims.create({
+			key: 'life5',
+			frames: [ { key: 'lifebar', frame: 0 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life4',
+			frames: [ { key: 'lifebar', frame: 1 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life3',
+			frames: [ { key: 'lifebar', frame: 2 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life2',
+			frames: [ { key: 'lifebar', frame: 3 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life1',
+			frames: [ { key: 'lifebar', frame: 4 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life0',
+			frames: [ { key: 'lifebar', frame: 5 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+
+        switch (this.hp)
+        {
+            case 5:
+                this.lifebar.anims.play('life5', true);
+                break;
+            case 4:
+                this.lifebar.anims.play('life4', true);
+                break;
+            case 3:
+                this.lifebar.anims.play('life3', true);
+                break;
+            case 2:
+                this.lifebar.anims.play('life2', true);
+                break;
+            case 1:
+                this.lifebar.anims.play('life1', true);
+                break;
+            case 0:
+                this.lifebar.anims.play('life0', true);
+                break;
+        }
+
         if (this.entrance == "city")
             this.player.direction = "right";
         else
@@ -153,7 +222,12 @@ export class RoomScene extends Phaser.Scene{
         })
     };
     update(){
+		this.lifebar.x = this.player.x - 150;
+		this.lifebar.y = this.player.y - 90;
+
         if (this.game_over){return;}
+
+		console.log(this.hp);
 
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
@@ -168,7 +242,7 @@ export class RoomScene extends Phaser.Scene{
 				this.canGoOut = false;
 				this.cameras.main.fadeOut(400, 0, 0, 0);
 				this.time.delayedCall(500, () => {
-					this.scene.start('CityScene', {entrance: "room"});
+					this.scene.start('CityScene', {entrance: "room", hp: this.hp});
 				})
 			}
 		}

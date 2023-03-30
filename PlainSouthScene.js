@@ -10,6 +10,8 @@ export class PlainSouthScene extends Phaser.Scene{
         super("PlainSouthScene");
 
         this.player;
+		this.lifebar;
+		this.hp;
         this.dashx;
         this.dashy;
         this.cursors;
@@ -27,6 +29,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.xpos = data.xpos;
+		this.hp = data.hp;
 
 		this.spider_once = false;
     }
@@ -60,7 +63,7 @@ export class PlainSouthScene extends Phaser.Scene{
         this.load.spritesheet('player_run_left','assets/player_run_left.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('lifebar','assets/lifebar.png',
-                    { frameWidth: 144, frameHeight: 32 });
+                    { frameWidth: 64, frameHeight: 16 });
         this.load.tilemapTiledJSON("plain_south_map", "assets/plain_south_map.json");
     }
     create(){
@@ -117,10 +120,12 @@ export class PlainSouthScene extends Phaser.Scene{
         this.player.can_get_hit = true;
         this.player.can_dash = true;
         this.player.is_dashing = false;
-        this.player.hp = 5;
 
-        const layer = this.add.layer();
-        layer.add([ map_under, this.shadow, this.player, map_above ])
+        this.layer = this.add.layer();
+        this.layer.add([ map_under, this.shadow, this.player, map_above ])
+
+		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
+		this.lifebar.body.allowGravity = false;
 
         map_under.setCollisionByProperty({ isSolid: true });
         map_above.setCollisionByProperty({ isSolid: true });
@@ -204,6 +209,66 @@ export class PlainSouthScene extends Phaser.Scene{
             repeat: -1
         });
 
+		this.anims.create({
+			key: 'life5',
+			frames: [ { key: 'lifebar', frame: 0 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life4',
+			frames: [ { key: 'lifebar', frame: 1 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life3',
+			frames: [ { key: 'lifebar', frame: 2 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life2',
+			frames: [ { key: 'lifebar', frame: 3 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life1',
+			frames: [ { key: 'lifebar', frame: 4 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+		this.anims.create({
+			key: 'life0',
+			frames: [ { key: 'lifebar', frame: 5 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+
+        switch (this.hp)
+        {
+            case 5:
+                this.lifebar.anims.play('life5', true);
+                break;
+            case 4:
+                this.lifebar.anims.play('life4', true);
+                break;
+            case 3:
+                this.lifebar.anims.play('life3', true);
+                break;
+            case 2:
+                this.lifebar.anims.play('life2', true);
+                break;
+            case 1:
+                this.lifebar.anims.play('life1', true);
+                break;
+            case 0:
+                this.lifebar.anims.play('life0', true);
+                break;
+        }
+
+
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.input.gamepad.once('connected', function (pad)
@@ -212,7 +277,11 @@ export class PlainSouthScene extends Phaser.Scene{
         })
     };
     update(){
+		this.lifebar.x = this.player.x - 200;
+		this.lifebar.y = this.player.y - 120;
+
         if (this.game_over){return;}
+		console.log(this.hp);
 
 		// console.log(this.player.x, this.player.y);
 
@@ -229,7 +298,7 @@ export class PlainSouthScene extends Phaser.Scene{
 				this.canGoOut = false;
 				this.cameras.main.fadeOut(400, 0, 0, 0);
 				this.time.delayedCall(500, () => {
-					this.scene.start('PlainNorthScene', {entrance: "plain_south1", xpos: this.player.x});
+					this.scene.start('PlainNorthScene', {entrance: "plain_south1", xpos: this.player.x, hp: this.hp });
 				})
 			}
 		}
@@ -240,7 +309,7 @@ export class PlainSouthScene extends Phaser.Scene{
 				this.canGoOut = false;
 				this.cameras.main.fadeOut(400, 0, 0, 0);
 				this.time.delayedCall(500, () => {
-					this.scene.start('PlainNorthScene', {entrance: "plain_south2", xpos: this.player.x});
+					this.scene.start('PlainNorthScene', {entrance: "plain_south2", xpos: this.player.x, hp: this.hp});
 				})
 			}
 		}
@@ -486,32 +555,32 @@ export class PlainSouthScene extends Phaser.Scene{
         {
             this.player.can_get_hit = false;
             this.player.setTint(0xff0000);
-            this.player.hp -= 1;
-            if (this.player.hp <= 0)
+            this.hp -= 1;
+            if (this.hp <= 0)
                 this.kill_player();
             setTimeout(this.cd_can_get_hit, 1000, this.player)
         }
 
-        // switch (this.player.hp)
-        // {
-        //     case 5:
-        //         this.lifebar.anims.play('life5', true);
-        //         break;
-        //     case 4:
-        //         this.lifebar.anims.play('life4', true);
-        //         break;
-        //     case 3:
-        //         this.lifebar.anims.play('life3', true);
-        //         break;
-        //     case 2:
-        //         this.lifebar.anims.play('life2', true);
-        //         break;
-        //     case 1:
-        //         this.lifebar.anims.play('life1', true);
-        //         break;
-        //     case 0:
-        //         this.lifebar.anims.play('life0', true);
-        //         break;
-        // }
+        switch (this.hp)
+        {
+            case 5:
+                this.lifebar.anims.play('life5', true);
+                break;
+            case 4:
+                this.lifebar.anims.play('life4', true);
+                break;
+            case 3:
+                this.lifebar.anims.play('life3', true);
+                break;
+            case 2:
+                this.lifebar.anims.play('life2', true);
+                break;
+            case 1:
+                this.lifebar.anims.play('life1', true);
+                break;
+            case 0:
+                this.lifebar.anims.play('life0', true);
+                break;
+        }
     }
 };
