@@ -27,7 +27,11 @@ var config =
     input:
     {
         gamepad: true
-    }
+    },
+	fps: {
+		target: 60,
+		forceSetTimeOut: true
+	},
 };
 
 new Phaser.Game(config);
