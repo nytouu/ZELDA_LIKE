@@ -210,7 +210,6 @@ export class ShopScene extends Phaser.Scene {
 		this.lifebar.y = this.player.y - 90;
 
         if (this.game_over) { return; }
-		console.log(this.hp);
 
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;

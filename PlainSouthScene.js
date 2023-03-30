@@ -281,7 +281,6 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.lifebar.y = this.player.y - 120;
 
         if (this.game_over){return;}
-		console.log(this.hp);
 
 		// console.log(this.player.x, this.player.y);
 

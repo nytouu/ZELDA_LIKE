@@ -257,7 +257,6 @@ export class CityScene extends Phaser.Scene
         {
             return;
         }
-		console.log(this.hp);
 
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
