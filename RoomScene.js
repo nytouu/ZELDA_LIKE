@@ -96,7 +96,7 @@ export class RoomScene extends Phaser.Scene{
         this.physics.add.collider(this.player, room_layer);
 
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setZoom(5);
+        this.cameras.main.setZoom(4);
 
         this.anims.create({
             key: 'idle_back',
@@ -222,8 +222,8 @@ export class RoomScene extends Phaser.Scene{
         })
     };
     update(){
-		this.lifebar.x = this.player.x - 150;
-		this.lifebar.y = this.player.y - 90;
+		this.lifebar.x = this.player.x - 200;
+		this.lifebar.y = this.player.y - 120;
 
         if (this.game_over){return;}
 
