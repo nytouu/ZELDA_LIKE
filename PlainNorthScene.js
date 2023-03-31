@@ -305,10 +305,10 @@ export class PlainNorthScene extends Phaser.Scene{
                 duration: 300,
                 onUpdate: function (tween)
                 {
-                    const valueRB = Math.floor(tween.getValue());
-                    const valueG = 115 + Math.floor(Math.floor(tween.getValue())/1.82);
+                    const valueGB = Math.floor(tween.getValue());
+                    const valueR = 200 + Math.floor(Math.floor(tween.getValue())/1.82);
     
-                    silhouette.setTintFill(Phaser.Display.Color.GetColor(valueRB, valueG, valueRB));   
+                    silhouette.setTintFill(Phaser.Display.Color.GetColor(valueR, valueGB, valueGB));   
                 }
             });
 		}
