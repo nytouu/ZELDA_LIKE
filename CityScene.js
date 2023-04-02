@@ -588,8 +588,8 @@ export class CityScene extends Phaser.Scene
 				this.player.setVelocityY(10);
 				break;
 		}
-		setTimeout(this.cd_attack, 300, this.player);
-		setTimeout(this.cd_can_attack, 400, this.player);
+		setTimeout(this.cd_attack, 400, this.player);
+		setTimeout(this.cd_can_attack, 500, this.player);
 	}
 
     kill_player()
