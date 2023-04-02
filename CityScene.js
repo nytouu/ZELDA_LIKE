@@ -130,7 +130,6 @@ export class CityScene extends Phaser.Scene
 
         city_map_above.setCollisionByProperty({isSolid : true});
         city_map_under.setCollisionByProperty({isSolid : true});
-        // this.player.setCollideWorldBounds(true);
 
         this.physics.add.collider(this.player, city_map_above);
         this.physics.add.collider(this.player, city_map_under);

@@ -20,6 +20,7 @@ export class PlainNorthScene extends Phaser.Scene{
         this.physics;
         this.shadow;
 		this.canGoOut = true;
+		this.click = false;
     }
 
     init(data)
@@ -53,6 +54,16 @@ export class PlainNorthScene extends Phaser.Scene{
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_run_left','assets/player_run_left.png',
                     { frameWidth: 32, frameHeight: 32 });
+		
+		this.load.spritesheet('player_attack_front', 'assets/player_attack_front.png',
+                              {frameWidth : 32, frameHeight : 32});
+        this.load.spritesheet('player_attack_back', 'assets/player_attack_back.png',
+                              {frameWidth : 32, frameHeight : 32});
+        this.load.spritesheet('player_attack_left', 'assets/player_attack_left.png',
+                              {frameWidth : 32, frameHeight : 32});
+        this.load.spritesheet('player_attack_right', 'assets/player_attack_right.png',
+                              {frameWidth : 32, frameHeight : 32});
+
         this.load.spritesheet('lifebar','assets/lifebar.png',
 					{ frameWidth: 64, frameHeight: 16 });
         this.load.tilemapTiledJSON("plain_north_map", "assets/plain_north_map.json");
@@ -108,8 +119,12 @@ export class PlainNorthScene extends Phaser.Scene{
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8,14).setOffset(12,16);
         this.player.can_get_hit = true;
+
         this.player.can_dash = true;
+		this.player.can_attack = true;
+
         this.player.is_dashing = false;
+		this.player.is_attacking = false;
 
         const layer = this.add.layer();
         layer.add([ map_under, this.shadow, this.player, map_above ])
@@ -178,6 +193,34 @@ export class PlainNorthScene extends Phaser.Scene{
             frameRate: 12,
             repeat: -1
         });
+		this.anims.create({
+            key : 'attack_front',
+            frames : this.anims.generateFrameNumbers('player_attack_front',
+                                                     {start : 0, end : 9}),
+            frameRate : 15,
+            repeat : 0
+        });
+        this.anims.create({
+            key : 'attack_back',
+            frames : this.anims.generateFrameNumbers('player_attack_back',
+                                                     {start : 0, end : 9}),
+            frameRate : 15,
+            repeat : 0
+        });
+        this.anims.create({
+            key : 'attack_left',
+            frames : this.anims.generateFrameNumbers('player_attack_left',
+                                                     {start : 0, end : 11}),
+            frameRate : 18,
+            repeat : 0
+        });
+        this.anims.create({
+            key : 'attack_right',
+            frames : this.anims.generateFrameNumbers('player_attack_right',
+                                                     {start : 0, end : 11}),
+            frameRate : 18,
+            repeat : 0
+        });
 
 		this.anims.create({
 			key: 'life5',
@@ -244,6 +287,7 @@ export class PlainNorthScene extends Phaser.Scene{
         {
             controller = pad;
         })
+		this.input.on('pointerdown', () => this.click = true);
     };
     update(){
 		this.lifebar.x = this.player.x - 200;
@@ -296,6 +340,15 @@ export class PlainNorthScene extends Phaser.Scene{
         if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
             this.player_dash(this.dashx, this.dashy);
 
+        if (!this.player.is_dashing && !this.player.is_attacking)
+        {
+            if (this.player.can_attack && this.click)
+            {
+                this.click = false;
+                this.player_attack(this.player.direction, this.dashx, this.dashy)
+            }
+        }
+
 		if (this.player.is_dashing)
 		{
 			const silhouette = this.dash_trail.create(this.player.x, this.player.y, this.current_anim).setPushable(false).setDepth(100).setAlpha(0.8);
@@ -319,7 +372,7 @@ export class PlainNorthScene extends Phaser.Scene{
 				silhouette.destroy();
 		})
 
-        if (!this.player.is_dashing)
+        if (!this.player.is_dashing && !this.player.is_attacking)
         {
             if (this.cursors.up.isDown && this.cursors.left.isDown &&
                     (!this.cursors.down.isDown && !this.cursors.right.isDown) ||
@@ -425,7 +478,7 @@ export class PlainNorthScene extends Phaser.Scene{
             }
             this.player.body.velocity.normalize().scale(SPEED);
 
-            if (this.cursors.up.isUp && this.cursors.down.isUp && this.cursors.left.isUp && this.cursors.right.isUp)
+            if (this.cursors.up.isUp && this.cursors.down.isUp && this.cursors.left.isUp && this.cursors.right.isUp && !this.player.is_attacking)
             {
                 this.player.setVelocity(0);
                 this.dashx = 0;
@@ -460,10 +513,17 @@ export class PlainNorthScene extends Phaser.Scene{
         player.can_dash = true;
     }
 
+	cd_can_attack(player) { player.can_attack = true; }
+
     cd_dash(player)
     {
         player.is_dashing = false;
         player.setTint(0xffffff);
+    }
+
+	cd_attack(player)
+    {
+        player.is_attacking = false;
     }
 
     cd_can_get_hit(player)
@@ -493,6 +553,37 @@ export class PlainNorthScene extends Phaser.Scene{
             this.player.setTint(0x00ffff);
         }
     }
+
+	player_attack(direction)
+	{
+		this.player.is_attacking = true;
+		this.player.can_attack = false;
+		switch (direction)
+		{
+			case "left":
+				this.player.anims.play('attack_left');
+				this.player.setVelocityX(-10);
+				this.player.setVelocityY(0);
+				break;
+			case "right":
+				this.player.anims.play("attack_right", true);
+				this.player.setVelocityX(10);
+				this.player.setVelocityY(0);
+				break;
+			case "back":
+				this.player.anims.play("attack_back",true );
+				this.player.setVelocityX(0);
+				this.player.setVelocityY(-10);
+				break;
+			case "front":
+				this.player.anims.play("attack_front",true);
+				this.player.setVelocityX(0);
+				this.player.setVelocityY(10);
+				break;
+		}
+		setTimeout(this.cd_attack, 300, this.player);
+		setTimeout(this.cd_can_attack, 400, this.player);
+	}
 
     kill_player()
     {
