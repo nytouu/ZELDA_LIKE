@@ -115,8 +115,10 @@ export class CityScene extends Phaser.Scene
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.player.setSize(8, 14).setOffset(12, 16);
         this.player.can_get_hit = true;
+
         this.player.can_dash = true;
         this.player.can_attack = true;
+
         this.player.is_dashing = false;
         this.player.is_attacking = false;
 
@@ -348,6 +350,15 @@ export class CityScene extends Phaser.Scene
 			(this.cursors.space.isDown || this.controller.A))
 			this.player_dash(this.dashx, this.dashy);
 
+        if (!this.player.is_dashing && !this.player.is_attacking)
+        {
+            if (this.player.can_attack && this.click)
+            {
+                this.click = false;
+                this.player_attack(this.player.direction, this.dashx, this.dashy)
+            }
+        }
+
 		if (this.player.is_dashing)
 		{
 			const silhouette = this.dash_trail.create(this.player.x, this.player.y, this.current_anim).setPushable(false).setDepth(100).setAlpha(0.8);
@@ -371,17 +382,12 @@ export class CityScene extends Phaser.Scene
 				silhouette.destroy();
 		})
 
+
         if (!this.player.is_dashing && !this.player.is_attacking)
         {
-			if (this.player.can_attack && this.click)
-			{
-				this.click = false;
-				this.player_attack(this.player.direction, this.dashx, this.dashy)
-			}
-
 
             if (this.cursors.up.isDown && this.cursors.left.isDown &&
-                    (!this.cursors.down.isDown && !this.cursors.right.isDown) ||
+                (!this.cursors.down.isDown && !this.cursors.right.isDown) ||
                 this.controller.up && this.controller.left)
             {
                 this.player.body.setVelocityX(-SPEED);
@@ -393,7 +399,7 @@ export class CityScene extends Phaser.Scene
                 this.player.direction = "back";
             }
             if (this.cursors.up.isDown && this.cursors.right.isDown &&
-                    (!this.cursors.down.isDown && !this.cursors.left.isDown) ||
+                (!this.cursors.down.isDown && !this.cursors.left.isDown) ||
                 this.controller.up && this.controller.right)
             {
                 this.player.body.setVelocityX(SPEED);
@@ -406,7 +412,7 @@ export class CityScene extends Phaser.Scene
             }
 
             if (this.cursors.down.isDown && this.cursors.left.isDown &&
-                    (!this.cursors.up.isDown && !this.cursors.right.isDown) ||
+                (!this.cursors.up.isDown && !this.cursors.right.isDown) ||
                 this.controller.down && this.controller.left)
             {
                 this.player.body.setVelocityX(-SPEED);
@@ -418,7 +424,7 @@ export class CityScene extends Phaser.Scene
                 this.player.direction = "front";
             }
             if (this.cursors.down.isDown && this.cursors.right.isDown &&
-                    (!this.cursors.up.isDown && !this.cursors.left.isDown) ||
+                (!this.cursors.up.isDown && !this.cursors.left.isDown) ||
                 this.controller.down && this.controller.right)
             {
                 this.player.body.setVelocityX(SPEED);
@@ -430,8 +436,8 @@ export class CityScene extends Phaser.Scene
                 this.player.direction = "front";
             }
             if (this.cursors.left.isDown &&
-                    (!this.cursors.right.isDown && !this.cursors.down.isDown &&
-                     !this.cursors.up.isDown) ||
+                (!this.cursors.right.isDown && !this.cursors.down.isDown &&
+                    !this.cursors.up.isDown) ||
                 this.controller.left)
             {
                 this.player.body.setVelocityX(-SPEED);
@@ -443,8 +449,8 @@ export class CityScene extends Phaser.Scene
                 this.player.direction = "left";
             }
             if (this.cursors.right.isDown &&
-                    (!this.cursors.left.isDown && !this.cursors.down.isDown &&
-                     !this.cursors.up.isDown) ||
+                (!this.cursors.left.isDown && !this.cursors.down.isDown &&
+                    !this.cursors.up.isDown) ||
                 this.controller.right)
             {
                 this.player.body.setVelocityX(SPEED);
@@ -457,8 +463,8 @@ export class CityScene extends Phaser.Scene
             }
 
             if (this.cursors.up.isDown &&
-                    (!this.cursors.down.isDown && !this.cursors.left.isDown &&
-                     !this.cursors.right.isDown) ||
+                (!this.cursors.down.isDown && !this.cursors.left.isDown &&
+                    !this.cursors.right.isDown) ||
                 this.controller.up)
             {
                 this.player.body.setVelocityX(0);
@@ -470,8 +476,8 @@ export class CityScene extends Phaser.Scene
                 this.player.direction = "back";
             }
             if (this.cursors.down.isDown &&
-                    (!this.cursors.up.isDown && !this.cursors.left.isDown &&
-                     !this.cursors.right.isDown) ||
+                (!this.cursors.up.isDown && !this.cursors.left.isDown &&
+                    !this.cursors.right.isDown) ||
                 this.controller.down)
             {
                 this.player.body.setVelocityX(0);
@@ -493,18 +499,18 @@ export class CityScene extends Phaser.Scene
 
                 switch (this.player.direction)
                 {
-                case "back":
-                    this.player.anims.play('idle_back', true);
-                    break;
-                case "front":
-                    this.player.anims.play('idle_front', true);
-                    break;
-                case "left":
-                    this.player.anims.play('idle_left', true);
-                    break;
-                case "right":
-                    this.player.anims.play('idle_right', true);
-                    break;
+                    case "back":
+                        this.player.anims.play('idle_back', true);
+                        break;
+                    case "front":
+                        this.player.anims.play('idle_front', true);
+                        break;
+                    case "left":
+                        this.player.anims.play('idle_left', true);
+                        break;
+                    case "right":
+                        this.player.anims.play('idle_right', true);
+                        break;
                 }
             }
         }
@@ -556,7 +562,7 @@ export class CityScene extends Phaser.Scene
 		}
     }
 
-	player_attack(direction, dx,dy)
+	player_attack(direction)
 	{
 		this.player.is_attacking = true;
 		this.player.can_attack = false;
@@ -564,27 +570,27 @@ export class CityScene extends Phaser.Scene
 		{
 			case "left":
 				this.player.anims.play('attack_left');
-				this.player.setVelocityX(dx * 10);
-				this.player.setVelocityY(dy * 10);
+				this.player.setVelocityX(-10);
+				this.player.setVelocityY(0);
 				break;
 			case "right":
 				this.player.anims.play("attack_right", true);
-				this.player.setVelocityX(dx * 10);
-				this.player.setVelocityY(dy * 10);
+				this.player.setVelocityX(10);
+				this.player.setVelocityY(0);
 				break;
 			case "back":
 				this.player.anims.play("attack_back",true );
-				this.player.setVelocityX(dx * 10);
-				this.player.setVelocityY(dy * 10);
+				this.player.setVelocityX(0);
+				this.player.setVelocityY(-10);
 				break;
 			case "front":
 				this.player.anims.play("attack_front",true);
-				this.player.setVelocityX(dx * 10);
-				this.player.setVelocityY(dy * 10);
+				this.player.setVelocityX(0);
+				this.player.setVelocityY(10);
 				break;
 		}
-		setTimeout(this.cd_attack, 500, this.player);
-		setTimeout(this.cd_can_attack, 500, this.player);
+		setTimeout(this.cd_attack, 300, this.player);
+		setTimeout(this.cd_can_attack, 400, this.player);
 	}
 
     kill_player()
