@@ -127,6 +127,8 @@ export class PlainSouthScene extends Phaser.Scene{
 		}
 
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
+        this.shadow.setCircle(18).setOffset(-2, -2);
+
         this.player.setSize(8,14).setOffset(12,16);
         this.player.can_get_hit = true;
 
@@ -394,8 +396,16 @@ export class PlainSouthScene extends Phaser.Scene{
 
 			this.spiders.children.each(function (spider) {
 				this.layer.add(spider);
+				spider.is_alive = true;
 				this.layer.moveDown(spider);
 				this.layer.moveDown(spider);
+
+				this.physics.add.overlap(spider, this.shadow, function(spider){
+					if (this.player.is_attacking && spider.is_alive)
+					{
+						spider.destroy();
+					}
+				}, null, this)
 			}, this)
 
 			this.spider_once = true;
@@ -674,4 +684,6 @@ export class PlainSouthScene extends Phaser.Scene{
                 break;
         }
     }
+
+
 };

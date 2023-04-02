@@ -66,7 +66,10 @@ export class ShopScene extends Phaser.Scene {
             this.player = this.physics.add.sprite(72, 34, 'player_idle_left');
         else
             this.player = this.physics.add.sprite(40, 32, 'player_idle_front');
+
         this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
+        this.shadow.setCircle(18).setOffset(-2, -2);
+
         this.player.setSize(8, 14).setOffset(12, 16);
 
         const layer = this.add.layer();

@@ -112,7 +112,9 @@ export class CityScene extends Phaser.Scene
             this.player.direction = "front";
         }
 
-        this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
+        this.shadow = this.physics.add.sprite(120, 340, 'player_shadow')
+        this.shadow.setCircle(18).setOffset(-2, -2);
+
         this.player.setSize(8, 14).setOffset(12, 16);
         this.player.can_get_hit = true;
 
