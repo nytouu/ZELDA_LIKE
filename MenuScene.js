@@ -63,39 +63,39 @@ export class MenuScene extends Phaser.Scene{
         mx = this.input.mousePointer.x;
         my = this.input.mousePointer.y;
 
-        this.background_menu.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.003) + (BG_SIZE_X) / 1.34);
-        this.background_menu.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.003) + (BG_SIZE_Y / 1.34);
+        this.background_menu.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 300);
+        this.background_menu.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 300);
 
-        this.name.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.02) + (BG_SIZE_X) / 1.34);
-        this.name.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.02) + (BG_SIZE_Y / 1.34);
+        this.name.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 100);
+        this.name.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 100);
 
-        this.text.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.002) + (BG_SIZE_X) / 1.34);
-        this.text.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.002) + (BG_SIZE_Y / 1.34);
-
-        this.losang.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X / 1.34)  * 0.03) + (BG_SIZE_X) / 1.34);
-        this.losang.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y / 1.34)) * 0.03) + (BG_SIZE_Y / 1.34);
-
-        this.square.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.04) + (BG_SIZE_X) / 1.34);
-        this.square.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.04) + (BG_SIZE_Y / 1.34);
-
-        this.square2.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.05) + (BG_SIZE_X) / 1.34);
-        this.square2.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.05) + (BG_SIZE_Y / 1.34);
-
-        this.circle.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.06) + (BG_SIZE_X) / 1.34);
-        this.circle.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.06) + (BG_SIZE_Y / 1.34);
-
-        this.dark1.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.02) + (BG_SIZE_X) / 1.34);
-        this.dark1.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.02) + (BG_SIZE_Y / 1.34);
-
-        this.dark2.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.03) + (BG_SIZE_X) / 1.34);
-        this.dark2.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.03) + (BG_SIZE_Y / 1.34);
-
-        this.dark3.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.04) + (BG_SIZE_X) / 1.34);
-        this.dark3.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.04) + (BG_SIZE_Y / 1.34);
-
-        this.dark4.x = (((BG_SIZE_X / 1.34) * (mx / BG_SIZE_X/ 1.34)  * 0.04) + (BG_SIZE_X) / 1.34);
-        this.dark4.y = (((BG_SIZE_Y / 1.34) * (my / BG_SIZE_Y/ 1.34)) * 0.04) + (BG_SIZE_Y / 1.34);
-
+        this.text.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 200);
+        this.text.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 200);
+ 
+        this.losang.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 70);
+        this.losang.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 70);
+ 
+        this.square.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 60);
+        this.square.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 60);
+ 
+        this.square2.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 40);
+        this.square2.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 40);
+ 
+        this.circle.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 2) / 20);
+        this.circle.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 2) / 20);
+ 
+        this.dark1.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 80);
+        this.dark1.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 80);
+ 
+        this.dark2.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 50);
+        this.dark2.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 50);
+ 
+        this.dark3.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 30);
+        this.dark3.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 30);
+ 
+        this.dark4.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 10);
+        this.dark4.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 10);
+ 
 		if (this.click == true)
 		{
 			this.cameras.main.fadeOut(900, 0, 0, 0);
