@@ -397,13 +397,73 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.spiders.children.each(function (spider) {
 				this.layer.add(spider);
 				spider.is_alive = true;
+                spider.hp = 2;
+                spider.can_get_hit = true;
+                spider.can_move = true;
+
 				this.layer.moveDown(spider);
 				this.layer.moveDown(spider);
 
 				this.physics.add.overlap(spider, this.shadow, function(spider){
 					if (this.player.is_attacking && spider.is_alive)
 					{
-						spider.destroy();
+                        if (spider.can_get_hit)
+                        {
+                            spider.hp -= 1;
+                            spider.can_get_hit = false;
+                            spider.can_move = false;
+
+                            switch (this.player.direction)
+                            {
+                                case "left":
+                                    spider.body.setVelocityX(-100);
+                                    spider.body.setVelocityY(0);
+                                    break;
+                                case "right":
+                                    spider.body.setVelocityX(100);
+                                    spider.body.setVelocityY(0);
+                                    break;
+                                case "back":
+                                    spider.body.setVelocityX(0);
+                                    spider.body.setVelocityY(-100);
+                                    break;
+                                case "front":
+                                    spider.body.setVelocityX(0);
+                                    spider.body.setVelocityY(100);
+                                    break;
+                            }
+
+                            spider.setTintFill(0xff0000);
+                            spider.body.setBounce(20, 20);
+                            this.time.delayedCall(200, () => {
+                                spider.setTint(0xffffff);
+                                spider.can_get_hit = true;
+                                if (spider.is_alive)
+                                {
+                                    spider.can_move = true;
+                                }
+                            })
+                        }
+
+                        if (spider.hp <= 0)
+                        {
+                            spider.is_alive = false;
+                            spider.can_move = false;
+
+                            spider.body.setVelocityX(0);
+                            spider.body.setVelocityY(0);
+
+                            spider.setTintFill(0xff0000);
+                            this.tweens.add({
+                                targets: spider,
+                                alpha: 0,
+                                duration: 1500,
+                                ease: 'Power2'
+                            });
+                            this.time.delayedCall(1500, () => {
+                                spider.destroy();
+                            })
+                        }
 					}
 				}, null, this)
 			}, this)
@@ -415,7 +475,10 @@ export class PlainSouthScene extends Phaser.Scene{
 		if (this.spider_once)
 		{
 			this.spiders.children.each(function (spider) {
-				this.physics.moveToObject(spider, this.player, 50);
+                if (spider.can_move)
+                {
+                    this.physics.moveToObject(spider, this.player, 50);
+                }
 				if (spider.x < this.player.x)
 					spider.setFlipX(true);
 				else
