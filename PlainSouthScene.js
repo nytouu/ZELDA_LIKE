@@ -457,10 +457,10 @@ export class PlainSouthScene extends Phaser.Scene{
                             this.tweens.add({
                                 targets: spider,
                                 alpha: 0,
-                                duration: 1500,
+                                duration: 500,
                                 ease: 'Power2'
                             });
-                            this.time.delayedCall(1500, () => {
+                            this.time.delayedCall(400, () => {
                                 spider.destroy();
                             })
                         }
@@ -469,7 +469,6 @@ export class PlainSouthScene extends Phaser.Scene{
 			}, this)
 
 			this.spider_once = true;
-			console.log("spawned mob");
 		}
 
 		if (this.spider_once)
