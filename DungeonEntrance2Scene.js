@@ -34,7 +34,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 
 	preload(){
 
-		this.load.image('background2', 'assets/background2.png');
+		this.load.image('background4', 'assets/background4.png');
 		this.load.image('player_shadow', 'assets/player_shadow.png');
 		this.load.image('dungeon_entrance2', 'assets/dungeon_entrance2.png')
 
@@ -73,7 +73,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.load.tilemapTiledJSON("dungeon_entrance2_map", "assets/dungeon_entrance2.json");
 	}
 	create(){
-		this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
+		this.background4 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background4');
 
 		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
 
@@ -306,8 +306,8 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
-		this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
-		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
+		this.background4.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
+		this.background4.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
 		if (this.player.x <=22)
 			this.switch_scene("DungeonEntranceScene", "dungeon_entrance2");
