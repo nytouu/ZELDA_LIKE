@@ -93,9 +93,15 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 
 		if (this.entrance == "dungeon_entrance")
 		{
-			this.player = this.physics.add.sprite(28, 280, 'player_idle_right');
+			this.player = this.physics.add.sprite(28, 268, 'player_idle_right');
 			this.current_anim = "player_idle_right";
 			this.player.direction = "right";
+		}
+		else if (this.entrance == "dungeon_room")
+		{
+			this.player = this.physics.add.sprite(106, 142, 'player_idle_front');
+			this.current_anim = "player_idle_front";
+			this.player.direction = "front";
 		}
 		else
 		{
