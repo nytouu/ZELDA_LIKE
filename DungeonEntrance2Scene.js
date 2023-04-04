@@ -4,10 +4,10 @@ const DASH_TIME = 200;
 const MAP_SIZE_X = 304;
 const MAP_SIZE_Y = 176;
 
-export class DungeonEntranceScene extends Phaser.Scene{
+export class DungeonEntrance2Scene extends Phaser.Scene{
 
 	constructor(){
-		super("DungeonEntranceScene");
+		super("DungeonEntrance2Scene");
 
 		this.player;
 		this.lifebar;
@@ -36,12 +36,8 @@ export class DungeonEntranceScene extends Phaser.Scene{
 
 		this.load.image('background2', 'assets/background2.png');
 		this.load.image('player_shadow', 'assets/player_shadow.png');
-		this.load.image('dungeon_entrance', 'assets/dungeon_entrance.png')
+		this.load.image('dungeon_entrance2', 'assets/dungeon_entrance2.png')
 
-		this.load.spritesheet('mini_spider_idle','assets/mini_spider_idle.png',
-			{ frameWidth: 18, frameHeight: 18 });
-		this.load.spritesheet('mini_spider_run','assets/mini_spider_run.png',
-			{ frameWidth: 18, frameHeight: 18 });
 
 		this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
@@ -69,35 +65,41 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		this.load.spritesheet('player_attack_right', 'assets/player_attack_right.png',
 			{frameWidth : 32, frameHeight : 32});
 
+		this.load.spritesheet('fire', 'assets/fire.png',
+			{frameWidth : 12, frameHeight : 12});
+
 		this.load.spritesheet('lifebar','assets/lifebar.png',
 			{ frameWidth: 64, frameHeight: 16 });
-		this.load.tilemapTiledJSON("dungeon_entrance_map", "assets/dungeon_entrance.json");
+		this.load.tilemapTiledJSON("dungeon_entrance2_map", "assets/dungeon_entrance2.json");
 	}
 	create(){
 		this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
 
 		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
-		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
-		const level_map = this.add.tilemap("dungeon_entrance_map");
-		const tiles_above = level_map.addTilesetImage(
-			"dungeon_entrance",
-			"dungeon_entrance",
+		const level_map = this.add.tilemap("dungeon_entrance2_map");
+		const tiles = level_map.addTilesetImage(
+			"dungeon_entrance2",
+			"dungeon_entrance2",
 		);
-		const map_layer = level_map.createLayer(
-			"tiles",
-			tiles_above
+		const layer_above = level_map.createLayer(
+			"above",
+			tiles
+		);
+		const layer_under = level_map.createLayer(
+			"under",
+			tiles
 		);
 
-		if (this.entrance == "plain_north")
+		if (this.entrance == "dungeon_entrance")
 		{
-			this.player = this.physics.add.sprite(30, 64, 'player_idle_right');
+			this.player = this.physics.add.sprite(28, 280, 'player_idle_right');
 			this.current_anim = "player_idle_right";
 			this.player.direction = "right";
 		}
 		else
 		{
-			this.player = this.physics.add.sprite(72, 64, 'player_idle_front');
+			this.player = this.physics.add.sprite(72, 200, 'player_idle_front');
 			this.current_anim = "player_idle_front";
 			this.player.direction = "front";
 		}
@@ -114,23 +116,22 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		this.player.is_dashing = false;
 		this.player.is_attacking = false;
 
+        this.fire1 = this.physics.add.sprite(66, 126, 'fire');
+        this.fire2 = this.physics.add.sprite(142, 126, 'fire');
 
 		this.layer = this.add.layer();
-		this.layer.add([ map_layer, this.shadow, this.player ])
+		this.layer.add([ layer_under, this.shadow, this.player,
+            layer_above, this.fire1, this.fire2 ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
 
-		map_layer.setCollisionByProperty({ isSolid: true });
+		layer_under.setCollisionByProperty({ isSolid: true });
+		layer_above.setCollisionByProperty({ isSolid: true });
 		// this.player.setCollideWorldBounds(true);
 
-		this.physics.add.collider(this.player, map_layer);
-
-		this.physics.add.collider(this.spiders, map_layer);
-
-		this.physics.add.collider(this.spiders, this.spiders);
-
-		this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
+		this.physics.add.collider(this.player, layer_above);
+		this.physics.add.collider(this.player, layer_under);
 
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(4);
@@ -188,18 +189,6 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		});
 
 		this.anims.create({
-			key: 'spider_idle',
-			frames: this.anims.generateFrameNumbers('mini_spider_idle', {start:0,end:3}),
-			frameRate: 4,
-			repeat: -1
-		});
-		this.anims.create({
-			key: 'spider_run',
-			frames: this.anims.generateFrameNumbers('mini_spider_run', {start:0,end:3}),
-			frameRate: 4,
-			repeat: -1
-		});
-		this.anims.create({
 			key : 'attack_front',
 			frames : this.anims.generateFrameNumbers('player_attack_front',
 				{start : 0, end : 9}),
@@ -226,6 +215,14 @@ export class DungeonEntranceScene extends Phaser.Scene{
 				{start : 0, end : 11}),
 			frameRate : 18,
 			repeat : 0
+		});
+
+		this.anims.create({
+			key : 'fire_play',
+			frames : this.anims.generateFrameNumbers('fire',
+				{start : 0, end : 2}),
+			frameRate : 6,
+			repeat : -1
 		});
 
 		this.anims.create({
@@ -265,6 +262,8 @@ export class DungeonEntranceScene extends Phaser.Scene{
 			repeat: 0
 		});
 
+        this.fire1.anims.play('fire_play', true);
+        this.fire2.anims.play('fire_play', true);
 		switch (this.hp)
 		{
 			case 5:
@@ -302,7 +301,7 @@ export class DungeonEntranceScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
-		// console.log(this.player.x, this.player.y);
+		console.log(this.player.x, this.player.y);
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
@@ -311,9 +310,9 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
 		if (this.player.x <=22)
-			this.switch_scene("PlainNorthScene", "dungeon_entrance");
-        else if (this.player.x >=280)
-			this.switch_scene("DungeonEntrance2Scene", "dungeon_entrance");
+			this.switch_scene("DungeonEntranceScene", "dungeon_entrance2");
+        else if (this.player.y <=132)
+			this.switch_scene("DungeonRoom", "dungeon_room");
 
 		if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
 			this.player_dash(this.dashx, this.dashy);
@@ -330,23 +329,6 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		if (this.player.is_dashing)
 			this.draw_dash_trail();
 		this.remove_trail();
-
-		if (this.player.x <= 120 && this.player.y >= 320 && !this.spider_once)
-			this.spawn_spiders()
-
-		if (this.spider_once)
-		{
-			this.spiders.children.each(function (spider) {
-				if (spider.can_move)
-				{
-					this.physics.moveToObject(spider, this.player, 50);
-				}
-				if (spider.x < this.player.x)
-					spider.setFlipX(true);
-				else
-					spider.setFlipX(false);
-			}, this)
-		}
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 			this.handle_input();
@@ -510,88 +492,6 @@ export class DungeonEntranceScene extends Phaser.Scene{
 			if(silhouette.alpha <= 0)
 				silhouette.destroy();
 		})
-	}
-
-	spawn_spiders()
-	{
-		this.spiders.create(480, 280, 'mini_spider_idle').anims.play('spider_run', true);
-		this.spiders.create(110, 70, 'mini_spider_idle').anims.play('spider_run', true);
-
-		this.spiders.children.each(function (spider) {
-			this.layer.add(spider);
-			spider.is_alive = true;
-			spider.hp = 2;
-			spider.can_get_hit = true;
-			spider.can_move = true;
-
-			this.layer.moveDown(spider);
-			this.layer.moveDown(spider);
-
-			this.physics.add.overlap(spider, this.shadow, function(spider){
-				if (this.player.is_attacking && spider.is_alive)
-				{
-					if (spider.can_get_hit)
-					{
-						spider.hp -= 1;
-						spider.can_get_hit = false;
-						spider.can_move = false;
-
-						switch (this.player.direction)
-						{
-							case "left":
-								spider.body.setVelocityX(-100);
-								spider.body.setVelocityY(0);
-								break;
-							case "right":
-								spider.body.setVelocityX(100);
-								spider.body.setVelocityY(0);
-								break;
-							case "back":
-								spider.body.setVelocityX(0);
-								spider.body.setVelocityY(-100);
-								break;
-							case "front":
-								spider.body.setVelocityX(0);
-								spider.body.setVelocityY(100);
-								break;
-						}
-
-						spider.setTintFill(0xff0000);
-						spider.body.setBounce(20, 20);
-						this.time.delayedCall(200, () => {
-							spider.setTint(0xffffff);
-							spider.can_get_hit = true;
-							if (spider.is_alive)
-							{
-								spider.can_move = true;
-							}
-						})
-					}
-
-					if (spider.hp <= 0)
-					{
-						spider.is_alive = false;
-						spider.can_move = false;
-
-						spider.body.setVelocityX(0);
-						spider.body.setVelocityY(0);
-
-						spider.setTintFill(0xff0000);
-						this.tweens.add({
-							targets: spider,
-							alpha: 0,
-							duration: 500,
-							ease: 'Power2'
-						});
-						this.time.delayedCall(400, () => {
-							spider.destroy();
-						})
-					}
-				}
-			}, null, this)
-		}, this)
-
-		this.spider_once = true;
 	}
 
 	handle_input()

@@ -5,6 +5,7 @@ import { PlainNorthScene as PlainNorthScene } from "./PlainNorthScene.js";
 import { PlainSouthScene as PlainSouthScene } from "./PlainSouthScene.js";
 import { ShopScene as ShopScene } from "./ShopScene.js";
 import { DungeonEntranceScene as DungeonEntranceScene } from "./DungeonEntranceScene.js";
+import { DungeonEntrance2Scene as DungeonEntrance2Scene } from "./DungeonEntrance2Scene.js";
 
 var config =
 {
@@ -24,7 +25,7 @@ var config =
         }
     },
     scene: [ MenuScene, RoomScene, CityScene, PlainNorthScene, PlainSouthScene,
-		ShopScene, DungeonEntranceScene ],
+		ShopScene, DungeonEntranceScene, DungeonEntrance2Scene ],
     pixelArt: true,
     input:
     {
