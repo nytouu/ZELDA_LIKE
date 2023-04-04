@@ -23,10 +23,12 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.layer;
 		this.click = false;
         this.keyX;
+        this.has_sword = false;
 	}
 
 	init(data)
 	{
+        this.has_sword = data.sword;
 		this.entrance = data.entrance;
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
@@ -113,7 +115,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 		}
 
 		this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
-		this.shadow.setCircle(18).setOffset(-2, -2);
+		this.shadow.setCircle(16).setOffset(0, 0);
 
 		this.player.setSize(8,14).setOffset(12,16);
 		this.player.can_get_hit = true;
@@ -344,7 +346,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 		{
-			if (this.player.can_attack && this.click)
+			if (this.player.can_attack && this.click && this.has_sword)
 			{
 				this.click = false;
 				this.player_attack(this.player.direction, this.dashx, this.dashy)
@@ -504,7 +506,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.canGoOut = false;
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
-				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp });
+				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, sword: this.has_sword });
 			})
 		}
 	}
@@ -519,7 +521,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			onUpdate: function (tween)
 			{
 				const valueGB = Math.floor(tween.getValue());
-				const valueR = 200 + Math.floor(Math.floor(tween.getValue())/1.82);
+				const valueR = 255 + Math.floor(Math.floor(tween.getValue())/1.82);
 
 				silhouette.setTintFill(Phaser.Display.Color.GetColor(valueR, valueGB, valueGB));   
 			}
@@ -563,20 +565,20 @@ export class DungeonRoomScene extends Phaser.Scene{
 						switch (this.player.direction)
 						{
 							case "left":
-								spider.body.setVelocityX(-100);
+								spider.body.setVelocityX(-180);
 								spider.body.setVelocityY(0);
 								break;
 							case "right":
-								spider.body.setVelocityX(100);
+								spider.body.setVelocityX(180);
 								spider.body.setVelocityY(0);
 								break;
 							case "back":
 								spider.body.setVelocityX(0);
-								spider.body.setVelocityY(-100);
+								spider.body.setVelocityY(-180);
 								break;
 							case "front":
 								spider.body.setVelocityX(0);
-								spider.body.setVelocityY(100);
+								spider.body.setVelocityY(180);
 								break;
 						}
 

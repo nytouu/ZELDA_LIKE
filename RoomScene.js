@@ -15,10 +15,12 @@ export class RoomScene extends Phaser.Scene{
 		this.physics;
 		this.shadow;
 		this.canGoOut = true;
+        this.has_sword = false;
 	}
 
 	init(data)
 	{
+        this.has_sword = data.sword;
 		this.entrance = data.entrance;
 		if (this.entrance == "city")
 		{
@@ -83,7 +85,7 @@ export class RoomScene extends Phaser.Scene{
 			this.player.direction = "front";
 		}
 		this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
-		this.shadow.setCircle(18).setOffset(-2, -2);
+		this.shadow.setCircle(16).setOffset(0, 0);
 
 		this.player.setSize(8,14).setOffset(12,16);
 
@@ -271,7 +273,7 @@ export class RoomScene extends Phaser.Scene{
 			this.canGoOut = false;
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
-				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp });
+				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, sword: this.has_sword });
 			})
 		}
 	}
