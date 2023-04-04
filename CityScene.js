@@ -23,6 +23,7 @@ export class CityScene extends Phaser.Scene
 		this.shadow;
 		this.canGoOut = true;
 		this.click = false;
+        this.keyX;
 	}
 
 	init(data)
@@ -288,6 +289,7 @@ export class CityScene extends Phaser.Scene
 
 
 		this.cursors = this.input.keyboard.createCursorKeys();
+        this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
 		this.input.gamepad.once('connected',
 			function(pad) { controller = pad; })
@@ -302,6 +304,9 @@ export class CityScene extends Phaser.Scene
 		{
 			return;
 		}
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyX))
+            this.click = true;
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;

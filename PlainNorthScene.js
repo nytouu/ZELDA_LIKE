@@ -21,6 +21,7 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.shadow;
 		this.canGoOut = true;
 		this.click = false;
+        this.keyX;
 	}
 
 	init(data)
@@ -290,6 +291,7 @@ export class PlainNorthScene extends Phaser.Scene{
 		}
 
 		this.cursors = this.input.keyboard.createCursorKeys();
+        this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
 		this.input.gamepad.once('connected', function (pad)
 			{
@@ -302,6 +304,9 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.lifebar.y = this.player.y - 120;
 
 		if (this.game_over){return;}
+
+        if (Phaser.Input.Keyboard.JustDown(this.keyX))
+            this.click = true;
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;

@@ -22,6 +22,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.canGoOut = true;
 		this.layer;
 		this.click = false;
+        this.keyX;
 	}
 
 	init(data)
@@ -310,6 +311,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 
 		this.cursors = this.input.keyboard.createCursorKeys();
+        this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
 		this.input.gamepad.once('connected', function (pad)
 			{
@@ -323,10 +325,13 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
-		console.log(this.player.x, this.player.y);
+        if (Phaser.Input.Keyboard.JustDown(this.keyX))
+            this.click = true;
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
+
+		console.log(this.player.x, this.player.y);
 
 		this.background4.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background4.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
