@@ -306,7 +306,7 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
-		console.log(this.player.x, this.player.y);
+		// console.log(this.player.x, this.player.y);
 
 		this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
@@ -481,10 +481,10 @@ export class PlainNorthScene extends Phaser.Scene{
 			duration: 300,
 			onUpdate: function (tween)
 			{
-				const valuegb = Math.floor(tween.getValue());
-				const valuer = 200 + Math.floor(Math.floor(tween.getValue())/1.82);
+				const valueGB = Math.floor(tween.getValue());
+				const valueR = 200 + Math.floor(Math.floor(tween.getValue())/1.82);
 
-				silhouette.setTintFill(Phaser.Display.Color.GetColor(valuer, valuegb, valuegb));   
+				silhouette.setTintFill(Phaser.Display.Color.GetColor(valueR, valueGB, valueGB));   
 			}
 		});
 
