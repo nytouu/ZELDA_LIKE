@@ -21,6 +21,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.shadow;
 		this.canGoOut = true;
 		this.layer;
+		this.sword;
 		this.click = false;
         this.keyX;
         this.has_sword = false;
@@ -42,8 +43,10 @@ export class PlainSouthScene extends Phaser.Scene{
 
 		this.load.image('background2', 'assets/background2.png');
 		this.load.image('player_shadow', 'assets/player_shadow.png');
-		this.load.image('plain_south_under', 'assets/plain_south_under.png')
-		this.load.image('plain_south_above', 'assets/plain_south_above.png')
+		this.load.image('plain_south_under', 'assets/plain_south_under.png');
+		this.load.image('plain_south_above', 'assets/plain_south_above.png');
+
+		this.load.image('sword', 'assets/sword_on_ground.png');
 
 		this.load.spritesheet('mini_spider_idle','assets/mini_spider_idle.png',
 			{ frameWidth: 18, frameHeight: 18 });
@@ -132,6 +135,11 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
 		this.shadow.setCircle(16).setOffset(0, 0);
 
+		this.sword = this.physics.add.sprite(148, 290, 'sword');
+		this.sword.setOffset(3,7).setSize(7,21)
+		if (this.has_sword)
+			this.sword.setVisible(false);
+
 		this.player.setSize(8,14).setOffset(12,16);
 		this.player.can_get_hit = true;
 
@@ -143,7 +151,7 @@ export class PlainSouthScene extends Phaser.Scene{
 
 
 		this.layer = this.add.layer();
-		this.layer.add([ map_under, this.shadow, this.player, map_above ])
+		this.layer.add([ map_under, this.shadow, this.player, map_above, this.sword ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
@@ -158,9 +166,8 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.physics.add.collider(this.spiders, map_under);
 		this.physics.add.collider(this.spiders, map_above);
 
-		this.physics.add.collider(this.spiders, this.spiders);
-
 		this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
+		this.physics.add.overlap(this.player, this.sword, this.get_sword, null, this);
 
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(4);
@@ -336,10 +343,13 @@ export class PlainSouthScene extends Phaser.Scene{
         if (Phaser.Input.Keyboard.JustDown(this.keyX))
             this.click = true;
 
+		if (this.has_sword && !this.spider_once)
+			this.spawn_spiders();
+
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
-		// console.log(this.player.x, this.player.y);
+		console.log(this.player.x, this.player.y);
 
 		this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
@@ -365,12 +375,6 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.draw_dash_trail();
 		this.remove_trail();
 
-
-		if (this.player.x <= 120 && this.player.y >= 320 && !this.spider_once)
-		{
-			this.has_sword = true;
-			this.spawn_spiders()
-		}
 
 		if (this.spider_once)
 		{
@@ -555,8 +559,18 @@ export class PlainSouthScene extends Phaser.Scene{
 	{
 		this.spider_once = true;
 
-		this.spiders.create(480, 280, 'mini_spider_idle').anims.play('spider_run', true);
-		this.spiders.create(110, 70, 'mini_spider_idle').anims.play('spider_run', true);
+		if (this.has_sword)
+		{
+			this.spiders.create(172, 248, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(138, 284, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(192, 284, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(172, 310, 'mini_spider_idle').anims.play('spider_run', true);
+		}
+		else
+		{
+			this.spiders.create(480, 280, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(110, 70, 'mini_spider_idle').anims.play('spider_run', true);
+		}
 
 		this.spiders.children.each(function (spider) {
 			this.layer.add(spider);
@@ -759,6 +773,17 @@ export class PlainSouthScene extends Phaser.Scene{
 					this.player.anims.play('idle_right', true);
 					break;
 			}
+		}
+	}
+	get_sword()
+	{
+		if (!this.has_sword)
+		{
+			this.spawn_spiders();
+			this.sword.setVisible(false);
+			this.has_sword = true;
+
+			this.click = true;
 		}
 	}
 };

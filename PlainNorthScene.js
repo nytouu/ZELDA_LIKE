@@ -75,6 +75,7 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
 
 		this.dash_trail = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
 		const level_map = this.add.tilemap("plain_north_map");
 		const tiles_above = level_map.addTilesetImage(
@@ -137,8 +138,8 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.player.is_dashing = false;
 		this.player.is_attacking = false;
 
-		const layer = this.add.layer();
-		layer.add([ map_under, this.shadow, this.player, map_above ])
+		this.layer = this.add.layer();
+		this.layer.add([ map_under, this.shadow, this.player, map_above ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
@@ -149,6 +150,11 @@ export class PlainNorthScene extends Phaser.Scene{
 
 		this.physics.add.collider(this.player, map_above);
 		this.physics.add.collider(this.player, map_under);
+
+		this.physics.add.collider(this.spiders, map_under);
+		this.physics.add.collider(this.spiders, map_above);
+
+		this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
 
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(4);
@@ -307,13 +313,16 @@ export class PlainNorthScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
+		if (this.has_sword && !this.spider_once)
+			this.spawn_spiders();
+
         if (Phaser.Input.Keyboard.JustDown(this.keyX))
             this.click = true;
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
-		// console.log(this.player.x, this.player.y);
+		console.log(this.player.x, this.player.y);
 
 		this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
@@ -342,6 +351,20 @@ export class PlainNorthScene extends Phaser.Scene{
 		if (this.player.is_dashing)
 			this.draw_dash_trail();
 		this.remove_trail();
+
+		if (this.spider_once)
+		{
+			this.spiders.children.each(function (spider) {
+				if (spider.can_move)
+				{
+					this.physics.moveToObject(spider, this.player, 50);
+				}
+				if (spider.x < this.player.x)
+					spider.setFlipX(true);
+				else
+					spider.setFlipX(false);
+			}, this)
+		}
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 			this.handle_input();
@@ -633,5 +656,91 @@ export class PlainNorthScene extends Phaser.Scene{
 					break;
 			}
 		}
+	}
+
+	spawn_spiders()
+	{
+		this.spider_once = true;
+
+		if (this.has_sword)
+		{
+			this.spiders.create(572, 234, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(652, 448, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(70, 280, 'mini_spider_idle').anims.play('spider_run', true);
+		}
+
+		this.spiders.children.each(function (spider) {
+			this.layer.add(spider);
+			spider.is_alive = true;
+			spider.hp = 2;
+			spider.can_get_hit = true;
+			spider.can_move = true;
+
+			this.layer.moveDown(spider);
+			this.layer.moveDown(spider);
+
+			this.physics.add.overlap(spider, this.shadow, function(spider){
+				if (this.player.is_attacking && spider.is_alive)
+				{
+					if (spider.can_get_hit)
+					{
+						spider.hp -= 1;
+						spider.can_get_hit = false;
+						spider.can_move = false;
+
+						switch (this.player.direction)
+						{
+							case "left":
+								spider.body.setVelocityX(-180);
+								spider.body.setVelocityY(0);
+								break;
+							case "right":
+								spider.body.setVelocityX(180);
+								spider.body.setVelocityY(0);
+								break;
+							case "back":
+								spider.body.setVelocityX(0);
+								spider.body.setVelocityY(-180);
+								break;
+							case "front":
+								spider.body.setVelocityX(0);
+								spider.body.setVelocityY(180);
+								break;
+						}
+
+						spider.setTintFill(0xff0000);
+						spider.body.setBounce(20, 20);
+						this.time.delayedCall(200, () => {
+							spider.setTint(0xffffff);
+							spider.can_get_hit = true;
+							if (spider.is_alive)
+							{
+								spider.can_move = true;
+							}
+						})
+					}
+
+					if (spider.hp <= 0)
+					{
+						spider.is_alive = false;
+						spider.can_move = false;
+
+						spider.body.setVelocityX(0);
+						spider.body.setVelocityY(0);
+
+						spider.setTintFill(0xff0000);
+						this.tweens.add({
+							targets: spider,
+							alpha: 0,
+							duration: 500,
+							ease: 'Power2'
+						});
+						this.time.delayedCall(400, () => {
+							spider.destroy();
+						})
+					}
+				}
+			}, null, this)
+		}, this)
 	}
 };
