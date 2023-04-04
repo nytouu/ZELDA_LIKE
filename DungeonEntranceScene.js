@@ -308,7 +308,7 @@ export class DungeonEntranceScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
-		// console.log(this.player.x, this.player.y);
+		console.log(this.player.x, this.player.y);
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
