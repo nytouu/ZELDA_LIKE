@@ -1,13 +1,13 @@
 const SPEED = 80;
 const DASH_SPEED = 260;
 const DASH_TIME = 200;
-const MAP_SIZE_X = 720;
-const MAP_SIZE_Y = 688;
+const MAP_SIZE_X = 304;
+const MAP_SIZE_Y = 176;
 
-export class PlainNorthScene extends Phaser.Scene{
+export class DungeonEntranceScene extends Phaser.Scene{
 
     constructor(){
-        super("PlainNorthScene");
+        super("DungeonEntranceScene");
 
         this.player;
 		this.lifebar;
@@ -20,6 +20,7 @@ export class PlainNorthScene extends Phaser.Scene{
         this.physics;
         this.shadow;
 		this.canGoOut = true;
+		this.layer;
 		this.click = false;
     }
 
@@ -28,7 +29,6 @@ export class PlainNorthScene extends Phaser.Scene{
         this.entrance = data.entrance;
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
-		this.xpos = data.xpos;
 		this.hp = data.hp;
     }
 
@@ -36,8 +36,13 @@ export class PlainNorthScene extends Phaser.Scene{
 
         this.load.image('background2', 'assets/background2.png');
         this.load.image('player_shadow', 'assets/player_shadow.png');
-        this.load.image('plain_north_under', 'assets/plain_north_under.png')
-        this.load.image('plain_north_above', 'assets/plain_north_above.png')
+		this.load.image('dungeon_entrance', 'assets/dungeon_entrance.png')
+
+		this.load.spritesheet('mini_spider_idle','assets/mini_spider_idle.png',
+			{ frameWidth: 18, frameHeight: 18 });
+		this.load.spritesheet('mini_spider_run','assets/mini_spider_run.png',
+			{ frameWidth: 18, frameHeight: 18 });
+
         this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
@@ -54,7 +59,7 @@ export class PlainNorthScene extends Phaser.Scene{
                     { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('player_run_left','assets/player_run_left.png',
                     { frameWidth: 32, frameHeight: 32 });
-		
+
 		this.load.spritesheet('player_attack_front', 'assets/player_attack_front.png',
                               {frameWidth : 32, frameHeight : 32});
         this.load.spritesheet('player_attack_back', 'assets/player_attack_back.png',
@@ -65,63 +70,38 @@ export class PlainNorthScene extends Phaser.Scene{
                               {frameWidth : 32, frameHeight : 32});
 
         this.load.spritesheet('lifebar','assets/lifebar.png',
-					{ frameWidth: 64, frameHeight: 16 });
-        this.load.tilemapTiledJSON("plain_north_map", "assets/plain_north_map.json");
+                    { frameWidth: 64, frameHeight: 16 });
+        this.load.tilemapTiledJSON("dungeon_entrance_map", "assets/dungeon_entrance.json");
     }
     create(){
         this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
 
-		this.dash_trail = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
+		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
-        const level_map = this.add.tilemap("plain_north_map");
+        const level_map = this.add.tilemap("dungeon_entrance_map");
         const tiles_above = level_map.addTilesetImage(
-            "plain_north_above",
-            "plain_north_above",
+            "dungeon_entrance",
+            "dungeon_entrance",
         );
-        const tiles_under = level_map.addTilesetImage(
-            "plain_north_under",
-            "plain_north_under"
-        );
-        const map_above = level_map.createLayer(
-            "above",
+        const map_layer = level_map.createLayer(
+            "tiles",
             tiles_above
         );
-        const map_under = level_map.createLayer(
-            "under",
-            tiles_under,
-        );
 
-		if (this.entrance == "city")
+		if (this.entrance == "plain_north")
 		{
-			this.player = this.physics.add.sprite(320, 350, 'player_idle_back');
-            this.current_anim = "player_idle_back";
-            this.player.direction = "back";
-		}
-		else if (this.entrance == "dungeon_entrance")
-		{
-			this.player = this.physics.add.sprite(230, 94, 'player_idle_left');
-            this.current_anim = "player_idle_left";
-            this.player.direction = "left";
-		}
-		else if (this.entrance == "plain_south1")
-		{
-			this.player = this.physics.add.sprite(this.xpos, 500, 'player_idle_back');
-            this.current_anim = "player_idle_back";
-            this.player.direction = "back";
-		}
-		else if (this.entrance == "plain_south2")
-		{
-			this.xpos < 436 ? this.xpos = 436 : this.xpos = this.xpos;
-			this.player = this.physics.add.sprite(this.xpos, 610, 'player_idle_back');
-            this.current_anim = "player_idle_back";
-            this.player.direction = "back";
+			this.player = this.physics.add.sprite(30, 64, 'player_idle_right');
+            this.current_anim = "player_idle_right";
+            this.player.direction = "right";
 		}
 		else
 		{
-			this.player = this.physics.add.sprite(320, 350, 'player_idle_front');
+			this.player = this.physics.add.sprite(72, 64, 'player_idle_front');
             this.current_anim = "player_idle_front";
             this.player.direction = "front";
 		}
+
         this.shadow = this.physics.add.sprite(120, 340, 'player_shadow');
         this.shadow.setCircle(18).setOffset(-2, -2);
 
@@ -134,18 +114,23 @@ export class PlainNorthScene extends Phaser.Scene{
         this.player.is_dashing = false;
 		this.player.is_attacking = false;
 
-        const layer = this.add.layer();
-        layer.add([ map_under, this.shadow, this.player, map_above ])
+
+        this.layer = this.add.layer();
+        this.layer.add([ map_layer, this.shadow, this.player ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
 
-        map_under.setCollisionByProperty({ isSolid: true });
-        map_above.setCollisionByProperty({ isSolid: true });
+        map_layer.setCollisionByProperty({ isSolid: true });
         // this.player.setCollideWorldBounds(true);
 
-        this.physics.add.collider(this.player, map_above);
-        this.physics.add.collider(this.player, map_under);
+        this.physics.add.collider(this.player, map_layer);
+
+		this.physics.add.collider(this.spiders, map_layer);
+
+        this.physics.add.collider(this.spiders, this.spiders);
+
+        this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(4);
@@ -199,6 +184,19 @@ export class PlainNorthScene extends Phaser.Scene{
             key: 'run_left',
             frames: this.anims.generateFrameNumbers('player_run_left', {start:0,end:11}),
             frameRate: 12,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'spider_idle',
+            frames: this.anims.generateFrameNumbers('mini_spider_idle', {start:0,end:3}),
+            frameRate: 4,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'spider_run',
+            frames: this.anims.generateFrameNumbers('mini_spider_run', {start:0,end:3}),
+            frameRate: 4,
             repeat: -1
         });
 		this.anims.create({
@@ -289,6 +287,7 @@ export class PlainNorthScene extends Phaser.Scene{
                 break;
         }
 
+
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.input.gamepad.once('connected', function (pad)
@@ -303,55 +302,22 @@ export class PlainNorthScene extends Phaser.Scene{
 
         if (this.game_over){return;}
 
+		console.log(this.player.x, this.player.y);
+
         this.shadow.x = this.player.x;
         this.shadow.y = this.player.y;
-
-		console.log(this.player.x, this.player.y);
 
         this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
         this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
 
-		if (this.player.y >= 370 && this.player.x >= 300 && this.player.x <= 340)
+		if (this.player.x <=22)
 		{
 			if (this.canGoOut == true)
 			{
 				this.canGoOut = false;
 				this.cameras.main.fadeOut(400, 0, 0, 0);
 				this.time.delayedCall(500, () => {
-					this.scene.start('CityScene', {entrance: "plain_north", hp: this.hp});
-				})
-			}
-		}
-		else if (this.player.x <= 176 && this.player.y >= 510)
-		{
-			if (this.canGoOut == true)
-			{
-				this.canGoOut = false;
-				this.cameras.main.fadeOut(400, 0, 0, 0);
-				this.time.delayedCall(500, () => {
-					this.scene.start('PlainSouthScene', {entrance: "plain_north1", xpos: this.player.x, hp: this.hp});
-				})
-			}
-		}
-		else if (this.player.x >= 240 && this.player.y <= 130)
-		{
-			if (this.canGoOut == true)
-			{
-				this.canGoOut = false;
-				this.cameras.main.fadeOut(400, 0, 0, 0);
-				this.time.delayedCall(500, () => {
-					this.scene.start('DungeonEntranceScene', {entrance: "plain_north", hp: this.hp});
-				})
-			}
-		}
-		else if (this.player.x >= 430 && this.player.y >= 620)
-		{
-			if (this.canGoOut == true)
-			{
-				this.canGoOut = false;
-				this.cameras.main.fadeOut(400, 0, 0, 0);
-				this.time.delayedCall(500, () => {
-					this.scene.start('PlainSouthScene', {entrance: "plain_north2", xpos: this.player.x, hp: this.hp});
+					this.scene.start('PlainNorthScene', {entrance: "dungeon_entrance", hp: this.hp });
 				})
 			}
 		}
@@ -383,6 +349,104 @@ export class PlainNorthScene extends Phaser.Scene{
                     silhouette.setTintFill(Phaser.Display.Color.GetColor(valueR, valueGB, valueGB));   
                 }
             });
+		}
+
+		if (this.player.x <= 120 && this.player.y >= 320 && !this.spider_once)
+		{
+			this.spiders.create(480, 280, 'mini_spider_idle').anims.play('spider_run', true);
+			this.spiders.create(110, 70, 'mini_spider_idle').anims.play('spider_run', true);
+
+			this.spiders.children.each(function (spider) {
+				this.layer.add(spider);
+				spider.is_alive = true;
+                spider.hp = 2;
+                spider.can_get_hit = true;
+                spider.can_move = true;
+
+				this.layer.moveDown(spider);
+				this.layer.moveDown(spider);
+
+				this.physics.add.overlap(spider, this.shadow, function(spider){
+					if (this.player.is_attacking && spider.is_alive)
+					{
+                        if (spider.can_get_hit)
+                        {
+                            spider.hp -= 1;
+                            spider.can_get_hit = false;
+                            spider.can_move = false;
+
+                            
+
+                            switch (this.player.direction)
+                            {
+                                case "left":
+                                    spider.body.setVelocityX(-100);
+                                    spider.body.setVelocityY(0);
+                                    break;
+                                case "right":
+                                    spider.body.setVelocityX(100);
+                                    spider.body.setVelocityY(0);
+                                    break;
+                                case "back":
+                                    spider.body.setVelocityX(0);
+                                    spider.body.setVelocityY(-100);
+                                    break;
+                                case "front":
+                                    spider.body.setVelocityX(0);
+                                    spider.body.setVelocityY(100);
+                                    break;
+                            }
+
+                            spider.setTintFill(0xff0000);
+                            spider.body.setBounce(20, 20);
+                            this.time.delayedCall(200, () => {
+                                spider.setTint(0xffffff);
+                                spider.can_get_hit = true;
+                                if (spider.is_alive)
+                                {
+                                    spider.can_move = true;
+                                }
+                            })
+                        }
+
+                        if (spider.hp <= 0)
+                        {
+                            spider.is_alive = false;
+                            spider.can_move = false;
+
+                            spider.body.setVelocityX(0);
+                            spider.body.setVelocityY(0);
+
+                            spider.setTintFill(0xff0000);
+                            this.tweens.add({
+                                targets: spider,
+                                alpha: 0,
+                                duration: 500,
+                                ease: 'Power2'
+                            });
+                            this.time.delayedCall(400, () => {
+                                spider.destroy();
+                            })
+                        }
+					}
+				}, null, this)
+			}, this)
+
+			this.spider_once = true;
+		}
+
+		if (this.spider_once)
+		{
+			this.spiders.children.each(function (spider) {
+                if (spider.can_move)
+                {
+                    this.physics.moveToObject(spider, this.player, 50);
+                }
+				if (spider.x < this.player.x)
+					spider.setFlipX(true);
+				else
+					spider.setFlipX(false);
+			}, this)
 		}
 
 		this.dash_trail.children.each(function (silhouette) {
@@ -548,7 +612,7 @@ export class PlainNorthScene extends Phaser.Scene{
     cd_can_get_hit(player)
     {
         player.can_get_hit = true;
-        if (!game_over)
+        if (!this.game_over)
             player.setTint(0xffffff);
     }
 
@@ -606,7 +670,7 @@ export class PlainNorthScene extends Phaser.Scene{
 
     kill_player()
     {
-        this.player.anims.play('turn');
+        this.player.anims.play('player_idle_front');
         this.game_over = true;
         this.player.setTint(0xff0000);
         this.physics.pause();
@@ -646,4 +710,6 @@ export class PlainNorthScene extends Phaser.Scene{
                 break;
         }
     }
+
+
 };

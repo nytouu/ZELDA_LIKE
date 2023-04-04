@@ -14,6 +14,7 @@ export class RoomScene extends Phaser.Scene{
         this.controller = false;
         this.physics;
         this.shadow;
+		this.text;
 		this.canGoOut = true;
     }
 
@@ -26,7 +27,10 @@ export class RoomScene extends Phaser.Scene{
 			this.cameras.main.fadeIn(600, 0, 0, 0);
 		}
 		else
+		{
 			this.cameras.main.fadeIn(1500, 0, 0, 0);
+			this.text = this.add.text(-40, MAP_SIZE_Y + 50, "Press arrows to move", {fontFamily: "monospace", resolution: 4});
+		}
 		this.canGoOut = true;
     }
 
@@ -86,7 +90,7 @@ export class RoomScene extends Phaser.Scene{
         this.player.setSize(8,14).setOffset(12,16);
 
         const layer = this.add.layer();
-        layer.add([ room_layer, this.shadow, this.player ])
+        layer.add([ room_layer, this.shadow, this.player, this.text ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
