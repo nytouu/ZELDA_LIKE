@@ -11,6 +11,7 @@ export class RoomScene extends Phaser.Scene{
 		this.controller = false;
 		this.canGoOut = true;
         this.has_sword = false;
+        this.door_opened = false;
         this.boss_dead = false;
 	}
 
@@ -19,6 +20,7 @@ export class RoomScene extends Phaser.Scene{
         this.has_sword = data.sword;
         this.boss_dead = data.boss_dead;
 		this.entrance = data.entrance;
+		this.door_opened = data.door;
 		if (this.entrance == "city")
 		{
 			this.hp = data.hp;
@@ -272,7 +274,7 @@ export class RoomScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
-					sword: this.has_sword, boss_dead: this.boss_dead });
+					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened });
 			})
 		}
 	}

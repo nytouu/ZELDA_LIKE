@@ -15,6 +15,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.click = false;
 		this.dashed = false;
         this.has_sword = false;
+        this.door_opened = false;
 	}
 
 	init(data)
@@ -25,6 +26,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.hp = data.hp;
+		this.door_opened = data.door;
 
 		this.game_over = false;
 	}
@@ -33,7 +35,8 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 
 		this.load.image('background4', 'assets/background4.png');
 		this.load.image('player_shadow', 'assets/player_shadow.png');
-		this.load.image('dungeon_entrance2', 'assets/dungeon_entrance2.png')
+		this.load.image('dungeon_entrance2_above', 'assets/dungeon_entrance2_above.png')
+		this.load.image('dungeon_entrance2_under', 'assets/dungeon_entrance2_under.png')
 
 
 		this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
@@ -65,6 +68,9 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.load.spritesheet('fire', 'assets/fire.png',
 			{frameWidth : 12, frameHeight : 12});
 
+		this.load.spritesheet('door', 'assets/dungeon_entrance2_door.png',
+			{frameWidth: 48, frameHeight: 48});
+
 		this.load.spritesheet('lifebar','assets/lifebar.png',
 			{ frameWidth: 64, frameHeight: 16 });
 		this.load.tilemapTiledJSON("dungeon_entrance2_map", "assets/dungeon_entrance2.json");
@@ -75,17 +81,21 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
 
 		const level_map = this.add.tilemap("dungeon_entrance2_map");
-		const tiles = level_map.addTilesetImage(
-			"dungeon_entrance2",
-			"dungeon_entrance2",
+		const tiles_under = level_map.addTilesetImage(
+			"dungeon_entrance2_under",
+			"dungeon_entrance2_under",
+		);
+		const tiles_above = level_map.addTilesetImage(
+			"dungeon_entrance2_above",
+			"dungeon_entrance2_above",
 		);
 		const layer_above = level_map.createLayer(
 			"above",
-			tiles
+			tiles_above
 		);
 		const layer_under = level_map.createLayer(
 			"under",
-			tiles
+			tiles_under
 		);
 
 		if (this.entrance == "dungeon_entrance")
@@ -122,8 +132,14 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
         this.fire1 = this.physics.add.sprite(66, 126, 'fire');
         this.fire2 = this.physics.add.sprite(142, 126, 'fire');
 
+		this.door = this.physics.add.sprite(104, 152, 'door');
+		this.door.setSize(48,32).setOffset(0,0).setImmovable(true);
+
+		if (this.door_opened)
+			this.door.setVisible(false);
+
 		this.layer = this.add.layer();
-		this.layer.add([ layer_under, this.shadow, this.player,
+		this.layer.add([ layer_under, this.shadow, this.door,this.player, 
             layer_above, this.fire1, this.fire2 ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
@@ -135,6 +151,9 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 
 		this.physics.add.collider(this.player, layer_above);
 		this.physics.add.collider(this.player, layer_under);
+
+		if (!this.door_opened)
+			this.door_collision = this.physics.add.collider(this.player, this.door);
 
 		this.cameras.main.startFollow(this.player);
 		this.cameras.main.setZoom(4);
@@ -229,6 +248,20 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		});
 
 		this.anims.create({
+			key : 'door_open',
+			frames : this.anims.generateFrameNumbers('door',
+				{start : 0, end : 15}),
+			frameRate : 8,
+			repeat : 0
+		});
+		this.anims.create({
+			key: 'door_closed',
+			frames: [ { key: 'door', frame: 0 } ],
+			frameRate: 1,
+			repeat: 0
+		});
+
+		this.anims.create({
 			key: 'life5',
 			frames: [ { key: 'lifebar', frame: 0 } ],
 			frameRate: 1,
@@ -267,6 +300,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 
         this.fire1.anims.play('fire_play', true);
         this.fire2.anims.play('fire_play', true);
+		this.door.anims.play('door_closed', true);
 		switch (this.hp)
 		{
 			case 5:
@@ -309,7 +343,8 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
 			this.time.delayedCall(800, () => {
 				return this.scene.start("DungeonEntrance2Scene"
-					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead});
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword,
+                        boss_dead: this.boss_dead, door: this.door_opened});
 			})
 		}
 
@@ -317,6 +352,9 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
             this.click = true;
 		if (Phaser.Input.Keyboard.JustDown(this.key_dash))
             this.dashed = true;
+
+		if (this.player.is_attacking && !this.door_opened && this.player.y <= 180 && this.has_sword)
+			this.open_door();
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
@@ -487,7 +525,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
-					sword: this.has_sword, boss_dead: this.boss_dead });
+					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened });
 			})
 		}
 	}
@@ -646,5 +684,14 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 					break;
 			}
 		}
+	}
+	open_door()
+	{
+		this.door.anims.play('door_open', false);
+		this.door_opened = true;
+
+		this.time.delayedCall(1000, () => {
+			this.physics.world.removeCollider(this.door_collision);
+		})
 	}
 };

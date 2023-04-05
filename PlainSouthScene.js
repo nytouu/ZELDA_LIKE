@@ -25,6 +25,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.canGoOut = true;
 		this.xpos = data.xpos;
 		this.hp = data.hp;
+		this.door_opened = data.door;
 
 		this.game_over = false;
 		this.spider_once = false;
@@ -335,7 +336,8 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
 			this.time.delayedCall(800, () => {
 				return this.scene.start("PlainSouthScene"
-					, {entrance: this.entrance, xpos: this.xpos, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead});
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword,
+                        boss_dead: this.boss_dead, door: this.door_opened});
 			})
 		}
 

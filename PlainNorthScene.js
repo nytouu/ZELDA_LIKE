@@ -15,12 +15,14 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.click = false;
 		this.dashed = false;
         this.has_sword = false;
+        this.door_opened = false;
 	}
 
 	init(data)
 	{
         this.has_sword = data.sword;
         this.boss_dead = data.boss_dead;
+		this.door_opened = data.door;
 		this.entrance = data.entrance;
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
@@ -313,7 +315,8 @@ export class PlainNorthScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
 			this.time.delayedCall(800, () => {
 				return this.scene.start("PlainNorthScene"
-					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead});
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword,
+                        boss_dead: this.boss_dead, door: this.door_opened});
 			})
 		}
 
@@ -511,7 +514,7 @@ export class PlainNorthScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
-					sword: this.has_sword, boss_dead: this.boss_dead });
+					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened });
 			})
 		}
 	}

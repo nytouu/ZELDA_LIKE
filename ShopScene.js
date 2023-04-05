@@ -19,6 +19,7 @@ export class ShopScene extends Phaser.Scene {
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.hp = data.hp;
+		this.door_opened = data.door;
 
 		this.game_over = false;
 	}
@@ -257,7 +258,7 @@ export class ShopScene extends Phaser.Scene {
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
-					sword: this.has_sword, boss_dead: this.boss_dead });
+					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened });
 			})
 		}
 	}
