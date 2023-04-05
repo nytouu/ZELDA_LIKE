@@ -432,7 +432,7 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.player.body.velocity.normalize().scale(DASH_SPEED);
 
 			setTimeout(this.cd_dash, DASH_TIME, this.player);
-			setTimeout(this.cd_can_dash, 600, this.player);
+			setTimeout(this.cd_can_dash, 800, this.player);
 
 			this.player.setTint(0x00ffff);
 		}
