@@ -7,13 +7,7 @@ export class ShopScene extends Phaser.Scene {
 	constructor() {
 		super("ShopScene");
 
-		this.player;
-		this.lifebar;
-		this.hp;
-		this.cursors;
 		this.controller = false;
-		this.physics;
-		this.shadow;
 		this.canGoOut = true;
         this.has_sword = false;
 	}
@@ -24,6 +18,8 @@ export class ShopScene extends Phaser.Scene {
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.hp = data.hp;
+
+		this.game_over = false;
 	}
 
 	preload() {

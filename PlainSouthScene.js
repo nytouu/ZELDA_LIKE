@@ -9,21 +9,10 @@ export class PlainSouthScene extends Phaser.Scene{
 	constructor(){
 		super("PlainSouthScene");
 
-		this.player;
-		this.lifebar;
-		this.hp;
-		this.dashx;
-		this.dashy;
-		this.cursors;
-		this.game_over = false;
 		this.controller = false;
-		this.physics;
-		this.shadow;
 		this.canGoOut = true;
-		this.layer;
-		this.sword;
 		this.click = false;
-        this.keyX;
+		this.dashed = false;
         this.has_sword = false;
 	}
 
@@ -36,6 +25,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.xpos = data.xpos;
 		this.hp = data.hp;
 
+		this.game_over = false;
 		this.spider_once = false;
 	}
 
@@ -326,7 +316,8 @@ export class PlainSouthScene extends Phaser.Scene{
 
 
 		this.cursors = this.input.keyboard.createCursorKeys();
-        this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        this.key_dash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        this.key_attack = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
 		this.input.gamepad.once('connected', function (pad)
 			{
@@ -340,8 +331,10 @@ export class PlainSouthScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
-        if (Phaser.Input.Keyboard.JustDown(this.keyX))
+		if (Phaser.Input.Keyboard.JustDown(this.key_attack))
             this.click = true;
+			if (Phaser.Input.Keyboard.JustDown(this.key_dash))
+            this.dashed = true;
 
 		if (this.has_sword && !this.spider_once)
 			this.spawn_spiders();
@@ -359,8 +352,11 @@ export class PlainSouthScene extends Phaser.Scene{
 		else if (this.player.x >=430 && this.player.y <= 210)
 			this.switch_scene("PlainNorthScene", "plain_south2");
 
-		if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
+		if (this.player.can_dash && this.dashed)
+		{
 			this.player_dash(this.dashx, this.dashy);
+			this.dashed = false;
+		}
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 		{

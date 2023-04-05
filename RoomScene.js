@@ -7,13 +7,8 @@ export class RoomScene extends Phaser.Scene{
 	constructor(){
 		super("RoomScene");
 
-		this.player;
-		this.lifebar;
 		this.hp = 5;
-		this.cursors;
 		this.controller = false;
-		this.physics;
-		this.shadow;
 		this.canGoOut = true;
         this.has_sword = false;
 	}
@@ -32,6 +27,7 @@ export class RoomScene extends Phaser.Scene{
 			this.cameras.main.fadeIn(1500, 0, 0, 0);
 		}
 		this.canGoOut = true;
+		this.game_over = false;
 	}
 
 	preload(){

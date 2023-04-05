@@ -9,20 +9,11 @@ export class DungeonRoomScene extends Phaser.Scene{
 	constructor(){
 		super("DungeonRoomScene");
 
-		this.player;
-		this.lifebar;
-		this.hp;
-		this.dashx;
-		this.dashy;
-		this.cursors;
 		this.game_over = false;
 		this.controller = false;
-		this.physics;
-		this.shadow;
 		this.canGoOut = true;
-		this.layer;
 		this.click = false;
-        this.keyX;
+		this.dashed = false;
         this.has_sword = false;
 	}
 
@@ -33,6 +24,10 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
 		this.hp = data.hp;
+        this.boss = false;
+
+        this.spider_once = false;
+		this.game_over = false;
 	}
 
 	preload(){
@@ -313,7 +308,8 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 
 		this.cursors = this.input.keyboard.createCursorKeys();
-        this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        this.key_dash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+        this.key_attack = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
 		this.input.gamepad.once('connected', function (pad)
 			{
@@ -327,8 +323,10 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
-        if (Phaser.Input.Keyboard.JustDown(this.keyX))
+        if (Phaser.Input.Keyboard.JustDown(this.key_attack))
             this.click = true;
+        if (Phaser.Input.Keyboard.JustDown(this.key_dash))
+            this.dashed = true;
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
@@ -341,8 +339,11 @@ export class DungeonRoomScene extends Phaser.Scene{
 		if (this.player.y >= 746)
 			this.switch_scene("DungeonEntrance2Scene", "dungeon_room");
 
-		if (this.player.can_dash && (this.cursors.space.isDown || this.controller.A))
-			this.player_dash(this.dashx, this.dashy);
+		if (this.player.can_dash && this.dashed)
+        {
+            this.player_dash(this.dashx, this.dashy);
+            this.dashed = false;
+        }
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 		{
