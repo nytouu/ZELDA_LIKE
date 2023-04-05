@@ -299,7 +299,11 @@ export class CityScene extends Phaser.Scene
 
 		if (this.game_over)
 		{
-			return;
+			this.cameras.main.fadeOut(700, 0, 0, 0);
+			this.time.delayedCall(800, () => {
+				return this.scene.start("CityScene"
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword});
+			})
 		}
 
         if (Phaser.Input.Keyboard.JustDown(this.key_attack))

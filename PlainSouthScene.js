@@ -329,7 +329,14 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.lifebar.x = this.player.x - 200;
 		this.lifebar.y = this.player.y - 120;
 
-		if (this.game_over){return;}
+		if (this.game_over)
+		{
+			this.cameras.main.fadeOut(700, 0, 0, 0);
+			this.time.delayedCall(800, () => {
+				return this.scene.start("PlainSouthScene"
+					, {entrance: this.entrance, hp: 5, xpos: this.xpos, sword: this.has_sword});
+			})
+		}
 
 		if (Phaser.Input.Keyboard.JustDown(this.key_attack))
             this.click = true;

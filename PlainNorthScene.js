@@ -306,7 +306,14 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.lifebar.x = this.player.x - 200;
 		this.lifebar.y = this.player.y - 120;
 
-		if (this.game_over){return;}
+		if (this.game_over)
+		{
+			this.cameras.main.fadeOut(700, 0, 0, 0);
+			this.time.delayedCall(800, () => {
+				return this.scene.start("PlainNorthScene"
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword});
+			})
+		}
 
 		if (this.has_sword && !this.spider_once)
 			this.spawn_spiders();
