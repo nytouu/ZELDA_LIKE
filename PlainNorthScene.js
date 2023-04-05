@@ -27,6 +27,7 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.xpos = data.xpos;
 		this.hp = data.hp;
 
+		this.spider_once = false;
 		this.game_over = false;
 	}
 
