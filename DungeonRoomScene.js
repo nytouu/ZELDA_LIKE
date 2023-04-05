@@ -41,6 +41,9 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.load.spritesheet('mini_spider_run','assets/mini_spider_run.png',
 			{ frameWidth: 18, frameHeight: 18 });
 
+		this.load.spritesheet('spider_boss','assets/big_spidy.png',
+			{ frameWidth: 64, frameHeight: 80 });
+
 		this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
 		this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
@@ -87,11 +90,11 @@ export class DungeonRoomScene extends Phaser.Scene{
 			"dungeon_room",
 			"dungeon_room",
 		);
-		const layer_above = level_map.createLayer(
+		this.layer_above = level_map.createLayer(
 			"above",
 			tiles
 		);
-		const layer_under = level_map.createLayer(
+		this.layer_under = level_map.createLayer(
 			"under",
 			tiles
 		);
@@ -123,22 +126,20 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 
 		this.layer = this.add.layer();
-		this.layer.add([ layer_under, this.shadow, this.player, layer_above, this.fire ])
+		this.layer.add([ this.layer_under, this.shadow, this.player, this.layer_above, this.fire ])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
 
-		layer_under.setCollisionByProperty({ isSolid: true });
-		layer_above.setCollisionByProperty({ isSolid: true });
+		this.layer_under.setCollisionByProperty({ isSolid: true });
+		this.layer_above.setCollisionByProperty({ isSolid: true });
 		// this.player.setCollideWorldBounds(true);
 
-		this.physics.add.collider(this.player, layer_above);
-		this.physics.add.collider(this.player, layer_under);
+		this.physics.add.collider(this.player, this.layer_above);
+		this.physics.add.collider(this.player, this.layer_under);
 
-		this.physics.add.collider(this.spiders, layer_above);
-		this.physics.add.collider(this.spiders, layer_under);
-
-		this.physics.add.collider(this.spiders, this.spiders);
+		this.physics.add.collider(this.spiders, this.layer_above);
+		this.physics.add.collider(this.spiders, this.layer_under);
 
 		this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
 
@@ -207,6 +208,12 @@ export class DungeonRoomScene extends Phaser.Scene{
 			key: 'spider_run',
 			frames: this.anims.generateFrameNumbers('mini_spider_run', {start:0,end:3}),
 			frameRate: 4,
+			repeat: -1
+		});
+		this.anims.create({
+			key: 'spider_boss_run',
+			frames: this.anims.generateFrameNumbers('spider_boss', {start:0,end:7}),
+			frameRate: 8,
 			repeat: -1
 		});
 		this.anims.create({
@@ -365,7 +372,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.draw_dash_trail();
 		this.remove_trail();
 
-		if (this.player.x <= 120 && this.player.y >= 320 && !this.spider_once)
+		if (this.player.y <= 140 && !this.spider_once && this.has_sword)
 			this.spawn_spiders()
 
 		if (this.spider_once)
@@ -380,6 +387,18 @@ export class DungeonRoomScene extends Phaser.Scene{
 				else
 					spider.setFlipX(false);
 			}, this)
+
+            if (this.boss)
+            {
+                if (this.boss.can_move)
+                {
+                    this.physics.moveToObject(this.boss, this.player, 20);
+                }
+                if (this.boss.x < this.player.x)
+                    this.boss.setFlipX(false);
+                else
+                    this.boss.setFlipX(true);
+            }
 		}
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
@@ -548,8 +567,99 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 	spawn_spiders()
 	{
-		this.spiders.create(480, 280, 'mini_spider_idle').anims.play('spider_run', true);
-		this.spiders.create(110, 70, 'mini_spider_idle').anims.play('spider_run', true);
+        if (!this.boss)
+        {
+            this.boss = this.physics.add.sprite(232, 354, 'spider_boss_run');
+            this.boss.anims.play('spider_boss_run', true);
+            this.boss.setCircle(24).setOffset(8,10);
+
+            this.physics.add.overlap(this.player, this.boss, this.damage_player, null, this);
+            this.physics.add.collider(this.boss, this.layer_above);
+            this.physics.add.collider(this.boss, this.layer_under);
+
+            this.layer.add(this.boss);
+            this.boss.is_alive = true;
+            this.boss.hp = 6;
+            this.boss.can_get_hit = true;
+            this.boss.can_move = true;
+
+            this.layer.moveDown(this.boss);
+            this.layer.moveDown(this.boss);
+
+            this.physics.add.overlap(this.boss, this.shadow, function(boss){
+                if (this.player.is_attacking && boss.is_alive)
+                {
+                    if (boss.can_get_hit)
+                    {
+                        boss.hp -= 1;
+                        boss.can_get_hit = false;
+                        boss.can_move = false;
+
+                        switch (this.player.direction)
+                        {
+                            case "left":
+                                boss.body.setVelocityX(-180);
+                                boss.body.setVelocityY(0);
+                                break;
+                            case "right":
+                                boss.body.setVelocityX(180);
+                                boss.body.setVelocityY(0);
+                                break;
+                            case "back":
+                                boss.body.setVelocityX(0);
+                                boss.body.setVelocityY(-180);
+                                break;
+                            case "front":
+                                boss.body.setVelocityX(0);
+                                boss.body.setVelocityY(180);
+                                break;
+                        }
+
+                        boss.setTintFill(0xff0000);
+                        boss.body.setBounce(20, 20);
+                        this.time.delayedCall(400, () => {
+                            boss.can_get_hit = true;
+                        })
+                        this.time.delayedCall(200, () => {
+                            boss.setTint(0xffffff);
+                            if (boss.is_alive)
+                            {
+                                boss.can_move = true;
+                            }
+                        })
+
+                        if (boss.hp == 3)
+                        {
+                            this.spider_once = false;
+                            this.spawn_spiders();
+                        }
+                        if (boss.hp <= 0)
+                        {
+                            boss.is_alive = false;
+                            boss.can_move = false;
+
+                            boss.body.setVelocityX(0);
+                            boss.body.setVelocityY(0);
+
+                            boss.setTintFill(0xff0000);
+                            this.tweens.add({
+                                targets: boss,
+                                alpha: 0,
+                                duration: 500,
+                                ease: 'Power2'
+                            });
+                            this.time.delayedCall(400, () => {
+                                boss.destroy();
+                            })
+                        }
+                    }
+                }
+            }, null, this)
+        }
+		this.spiders.create(340, 96, 'mini_spider_idle').anims.play('spider_run', true);
+		this.spiders.create(340, 310, 'mini_spider_idle').anims.play('spider_run', true);
+		this.spiders.create(124, 310, 'mini_spider_idle').anims.play('spider_run', true);
+		this.spiders.create(124, 96, 'mini_spider_idle').anims.play('spider_run', true);
 
 		this.spiders.children.each(function (spider) {
 			this.layer.add(spider);
@@ -592,9 +702,11 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 						spider.setTintFill(0xff0000);
 						spider.body.setBounce(20, 20);
+						this.time.delayedCall(400, () => {
+                            spider.can_get_hit = true;
+                        })
 						this.time.delayedCall(200, () => {
 							spider.setTint(0xffffff);
-							spider.can_get_hit = true;
 							if (spider.is_alive)
 							{
 								spider.can_move = true;
