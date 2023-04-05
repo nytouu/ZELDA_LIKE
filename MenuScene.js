@@ -96,6 +96,9 @@ export class MenuScene extends Phaser.Scene{
         this.dark4.x = (BG_SIZE_X / 1.34) + (1 * (mx - BG_SIZE_X / 1.34) / 10);
         this.dark4.y = (BG_SIZE_Y / 1.34) + (1 * (my - BG_SIZE_Y / 1.34) / 10);
  
+		if (this.cursors.space.isDown)
+			this.click = true;
+
 		if (this.click == true)
 		{
 			this.cameras.main.fadeOut(900, 0, 0, 0);
