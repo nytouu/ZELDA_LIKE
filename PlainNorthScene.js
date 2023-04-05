@@ -376,6 +376,9 @@ export class PlainNorthScene extends Phaser.Scene{
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 			this.handle_input();
+
+		this.dashed = false;
+		this.click = false;
 	}
 
 	// Methods
