@@ -5,7 +5,7 @@
 controls :
 
 left/right/up/down - movement\
-space - dash\
-click or x - attack
+x - dash\
+c - attack
 
 [click here to play !](https://nytouu.github.io/ZELDA_LIKE/)
