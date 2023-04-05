@@ -47,6 +47,10 @@ export class ShopScene extends Phaser.Scene {
 			{ frameWidth: 32, frameHeight: 32 });
 		this.load.spritesheet('lifebar', 'assets/lifebar.png',
 			{ frameWidth: 64, frameHeight: 16 });
+
+		this.load.spritesheet('shopkeeper', 'assets/shopkeeper_idle.png',
+			{ frameWidth: 32, frameHeight: 32 });
+
 		this.load.tilemapTiledJSON("shop_map", "assets/shop_map.json");
 	}
 	create() {
@@ -67,13 +71,15 @@ export class ShopScene extends Phaser.Scene {
 		else
 			this.player = this.physics.add.sprite(40, 32, 'player_idle_front');
 
+        this.shopkeeper = this.physics.add.sprite(32, 22, 'shopkeeper');
+
 		this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
 		this.shadow.setCircle(18).setOffset(-2, -2);
 
 		this.player.setSize(8, 14).setOffset(12, 16);
 
 		const layer = this.add.layer();
-		layer.add([shop_layer, this.shadow, this.player])
+		layer.add([shop_layer, this.shopkeeper, this.shadow, this.player])
 
 		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
 		this.lifebar.body.allowGravity = false;
@@ -139,6 +145,13 @@ export class ShopScene extends Phaser.Scene {
 		});
 
 		this.anims.create({
+			key: 'shopkeeper_idle',
+			frames: this.anims.generateFrameNumbers('shopkeeper', { start: 0, end: 5 }),
+			frameRate: 6,
+			repeat: -1
+		});
+
+		this.anims.create({
 			key: 'life5',
 			frames: [ { key: 'lifebar', frame: 0 } ],
 			frameRate: 1,
@@ -175,6 +188,7 @@ export class ShopScene extends Phaser.Scene {
 			repeat: 0
 		});
 
+        this.shopkeeper.anims.play("shopkeeper_idle", true);
 		switch (this.hp)
 		{
 			case 5:
@@ -212,6 +226,7 @@ export class ShopScene extends Phaser.Scene {
 		this.lifebar.x = this.player.x - 200;
 		this.lifebar.y = this.player.y - 120;
 
+        console.log(this.player.x, this.player.y)
 		if (this.game_over) { return; }
 
 		this.shadow.x = this.player.x;
@@ -247,8 +262,6 @@ export class ShopScene extends Phaser.Scene {
 		this.player.can_dash = false;
 		setTimeout(this.cd_dash, 200, this.player);
 		setTimeout(this.cd_can_dash, 1000, this.player);
-
-		console.log("dash")
 	}
 	switch_scene(scene, entrance)
 	{
