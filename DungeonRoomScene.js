@@ -645,6 +645,8 @@ export class DungeonRoomScene extends Phaser.Scene{
                             boss.is_alive = false;
                             boss.can_move = false;
 
+							this.boss_dead = true;
+
                             boss.body.setVelocityX(0);
                             boss.body.setVelocityY(0);
 
