@@ -334,7 +334,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
 			this.time.delayedCall(800, () => {
 				return this.scene.start("DungeonRoomScene"
-					, {entrance: this.entrance, hp: 5, sword: this.has_sword});
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead});
 			})
 		}
 
@@ -373,7 +373,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.draw_dash_trail();
 		this.remove_trail();
 
-		if (this.player.y <= 140 && !this.spider_once && this.has_sword)
+		if (this.player.y <= 140 && !this.spider_once && this.has_sword && !this.boss_dead)
 			this.spawn_spiders()
 
 		if (this.spider_once)
