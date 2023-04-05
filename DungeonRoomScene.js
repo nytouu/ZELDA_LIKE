@@ -623,7 +623,6 @@ export class DungeonRoomScene extends Phaser.Scene{
                         }
 
                         boss.setTintFill(0xff0000);
-                        boss.body.setBounce(20, 20);
                         this.time.delayedCall(400, () => {
                             boss.can_get_hit = true;
                         })
@@ -711,7 +710,6 @@ export class DungeonRoomScene extends Phaser.Scene{
 						}
 
 						spider.setTintFill(0xff0000);
-						spider.body.setBounce(20, 20);
 						this.time.delayedCall(400, () => {
                             spider.can_get_hit = true;
                         })

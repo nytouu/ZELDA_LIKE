@@ -583,7 +583,6 @@ export class DungeonEntranceScene extends Phaser.Scene{
 						}
 
 						spider.setTintFill(0xff0000);
-						spider.body.setBounce(20, 20);
 						this.time.delayedCall(200, () => {
 							spider.setTint(0xffffff);
 							spider.can_get_hit = true;
