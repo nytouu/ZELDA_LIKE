@@ -499,6 +499,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 	{
 		if (this.player.can_get_hit)
 		{
+			this.cameras.main.shake(200, 0.0001);
 			this.player.can_get_hit = false;
 			this.player.setTint(0xff0000);
 			this.hp -= 1;
@@ -596,6 +597,7 @@ export class DungeonRoomScene extends Phaser.Scene{
                 {
                     if (boss.can_get_hit)
                     {
+						this.cameras.main.shake(200, 0.0001);
                         boss.hp -= 1;
                         boss.can_get_hit = false;
                         boss.can_move = false;
@@ -681,6 +683,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 				{
 					if (spider.can_get_hit)
 					{
+						this.cameras.main.shake(200, 0.0001);
 						spider.hp -= 1;
 						spider.can_get_hit = false;
 						spider.can_move = false;
