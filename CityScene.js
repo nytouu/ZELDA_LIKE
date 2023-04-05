@@ -22,6 +22,7 @@ export class CityScene extends Phaser.Scene
 	init(data)
 	{
         this.has_sword = data.sword;
+        this.boss_dead = data.boss_dead;
 		this.entrance = data.entrance;
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
@@ -478,7 +479,8 @@ export class CityScene extends Phaser.Scene
 			this.canGoOut = false;
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
-				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, sword: this.has_sword });
+				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
+					sword: this.has_sword, boss_dead: this.boss_dead });
 			})
 		}
 	}
@@ -513,8 +515,7 @@ export class CityScene extends Phaser.Scene
 	handle_input()
 	{
 		if (this.cursors.up.isDown && this.cursors.left.isDown &&
-			(!this.cursors.down.isDown && !this.cursors.right.isDown) ||
-			this.controller.up && this.controller.left)
+			(!this.cursors.down.isDown && !this.cursors.right.isDown))
 		{
 			this.player.body.setVelocityX(-SPEED);
 			this.player.body.setVelocityY(-SPEED);
@@ -525,8 +526,7 @@ export class CityScene extends Phaser.Scene
 			this.player.direction = "back";
 		}
 		if (this.cursors.up.isDown && this.cursors.right.isDown &&
-			(!this.cursors.down.isDown && !this.cursors.left.isDown) ||
-			this.controller.up && this.controller.right)
+			(!this.cursors.down.isDown && !this.cursors.left.isDown))
 		{
 			this.player.body.setVelocityX(SPEED);
 			this.player.body.setVelocityY(-SPEED);
@@ -538,8 +538,7 @@ export class CityScene extends Phaser.Scene
 		}
 
 		if (this.cursors.down.isDown && this.cursors.left.isDown &&
-			(!this.cursors.up.isDown && !this.cursors.right.isDown) ||
-			this.controller.down && this.controller.left)
+			(!this.cursors.up.isDown && !this.cursors.right.isDown))
 		{
 			this.player.body.setVelocityX(-SPEED);
 			this.player.body.setVelocityY(SPEED);
@@ -550,8 +549,7 @@ export class CityScene extends Phaser.Scene
 			this.player.direction = "front";
 		}
 		if (this.cursors.down.isDown && this.cursors.right.isDown &&
-			(!this.cursors.up.isDown && !this.cursors.left.isDown) ||
-			this.controller.down && this.controller.right)
+			(!this.cursors.up.isDown && !this.cursors.left.isDown))
 		{
 			this.player.body.setVelocityX(SPEED);
 			this.player.body.setVelocityY(SPEED);
@@ -563,8 +561,7 @@ export class CityScene extends Phaser.Scene
 		}
 		if (this.cursors.left.isDown &&
 			(!this.cursors.right.isDown && !this.cursors.down.isDown &&
-				!this.cursors.up.isDown) ||
-			this.controller.left)
+				!this.cursors.up.isDown))
 		{
 			this.player.body.setVelocityX(-SPEED);
 			this.player.body.setVelocityY(0);
@@ -576,8 +573,7 @@ export class CityScene extends Phaser.Scene
 		}
 		if (this.cursors.right.isDown &&
 			(!this.cursors.left.isDown && !this.cursors.down.isDown &&
-				!this.cursors.up.isDown) ||
-			this.controller.right)
+				!this.cursors.up.isDown))
 		{
 			this.player.body.setVelocityX(SPEED);
 			this.player.body.setVelocityY(0);
@@ -590,8 +586,7 @@ export class CityScene extends Phaser.Scene
 
 		if (this.cursors.up.isDown &&
 			(!this.cursors.down.isDown && !this.cursors.left.isDown &&
-				!this.cursors.right.isDown) ||
-			this.controller.up)
+				!this.cursors.right.isDown))
 		{
 			this.player.body.setVelocityX(0);
 			this.player.body.setVelocityY(-SPEED);
@@ -603,8 +598,7 @@ export class CityScene extends Phaser.Scene
 		}
 		if (this.cursors.down.isDown &&
 			(!this.cursors.up.isDown && !this.cursors.left.isDown &&
-				!this.cursors.right.isDown) ||
-			this.controller.down)
+				!this.cursors.right.isDown))
 		{
 			this.player.body.setVelocityX(0);
 			this.player.body.setVelocityY(SPEED);

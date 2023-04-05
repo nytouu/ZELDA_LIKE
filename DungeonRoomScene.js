@@ -20,6 +20,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 	init(data)
 	{
         this.has_sword = data.sword;
+        this.boss_dead = data.boss_dead;
 		this.entrance = data.entrance;
 		this.cameras.main.fadeIn(600, 0, 0, 0);
 		this.canGoOut = true;
@@ -533,7 +534,8 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.canGoOut = false;
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
-				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, sword: this.has_sword });
+				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
+					sword: this.has_sword, boss_dead: this.boss_dead });
 			})
 		}
 	}

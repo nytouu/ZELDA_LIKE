@@ -11,11 +11,13 @@ export class RoomScene extends Phaser.Scene{
 		this.controller = false;
 		this.canGoOut = true;
         this.has_sword = false;
+        this.boss_dead = false;
 	}
 
 	init(data)
 	{
         this.has_sword = data.sword;
+        this.boss_dead = data.boss_dead;
 		this.entrance = data.entrance;
 		if (this.entrance == "city")
 		{
@@ -269,7 +271,8 @@ export class RoomScene extends Phaser.Scene{
 			this.canGoOut = false;
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
-				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, sword: this.has_sword });
+				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
+					sword: this.has_sword, boss_dead: this.boss_dead });
 			})
 		}
 	}
