@@ -30,6 +30,7 @@ export class ShopScene extends Phaser.Scene {
 
 		this.load.image('background3', 'assets/background3.png');
 		this.load.image('player_shadow', 'assets/player_shadow.png');
+		this.load.image('key', 'assets/key.png');
 		this.load.image('shop', 'assets/shop.png')
 		this.load.spritesheet('player_idle_back', 'assets/player_idle_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
@@ -85,6 +86,12 @@ export class ShopScene extends Phaser.Scene {
 
 		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
 		this.lifebar.setScrollFactor(0);
+
+		this.key = this.physics.add.sprite(736, 440, 'key');
+		this.key.setScrollFactor(0);
+
+		if (!this.has_key)
+			this.key.setVisible(false);
 
 		shop_layer.setCollisionByProperty({ isSolid: true });
 		this.player.setCollideWorldBounds(true);
@@ -234,6 +241,7 @@ export class ShopScene extends Phaser.Scene {
             if(this.money >= 3)
             {
                 this.has_key = true;
+				this.key.setVisible(true);
                 console.log('get key');
             }
         }

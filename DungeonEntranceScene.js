@@ -128,6 +128,12 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
 		this.lifebar.setScrollFactor(0);
 
+		this.key = this.physics.add.sprite(736, 440, 'key');
+		this.key.setScrollFactor(0);
+
+		if (!this.has_key)
+			this.key.setVisible(false);
+
 		map_layer.setCollisionByProperty({ isSolid: true });
 		// this.player.setCollideWorldBounds(true);
 
