@@ -153,8 +153,14 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
 		this.lifebar.setScrollFactor(0);
 
-		this.key = this.physics.add.sprite(736, 440, 'key');
+		this.key = this.physics.add.sprite(772, 440, 'key');
 		this.key.setScrollFactor(0);
+
+		this.money_ui = this.physics.add.sprite(736, 440, 'money');
+		this.money_ui.setScrollFactor(0);
+
+		this.money_text = this.add.text(746, 435, this.money + "x", {font: "monospace 11", resolution: 2});
+		this.money_text.setScrollFactor(0);
 
 		if (!this.has_key)
 			this.key.setVisible(false);
@@ -411,6 +417,7 @@ export class PlainSouthScene extends Phaser.Scene{
 			if (Phaser.Geom.Intersects.RectangleToRectangle(bounds_player, bounds_drop))
 			{
 				this.money += 1;
+				this.money_text.setText(this.money + "x");
 				console.log(this.money);
 				drop.destroy();
 			}	

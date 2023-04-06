@@ -38,6 +38,7 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		this.load.image('background2', 'assets/background2.png');
 		this.load.image('player_shadow', 'assets/player_shadow.png');
 		this.load.image('dungeon_entrance', 'assets/dungeon_entrance.png')
+		this.load.image('money', 'assets/money.png');
 
 		this.load.spritesheet('mini_spider_idle','assets/mini_spider_idle.png',
 			{ frameWidth: 18, frameHeight: 18 });
@@ -128,8 +129,14 @@ export class DungeonEntranceScene extends Phaser.Scene{
 		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
 		this.lifebar.setScrollFactor(0);
 
-		this.key = this.physics.add.sprite(736, 440, 'key');
+		this.key = this.physics.add.sprite(772, 440, 'key');
 		this.key.setScrollFactor(0);
+
+		this.money_ui = this.physics.add.sprite(736, 440, 'money');
+		this.money_ui.setScrollFactor(0);
+
+		this.money_text = this.add.text(746, 435, this.money + "x", {font: "monospace 11", resolution: 2});
+		this.money_text.setScrollFactor(0);
 
 		if (!this.has_key)
 			this.key.setVisible(false);
