@@ -28,6 +28,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.canGoOut = true;
 		this.hp = data.hp;
 		this.door_opened = data.door;
+        this.has_key = data.key;
 
 		this.game_over = false;
 	}
@@ -344,8 +345,8 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
 			this.time.delayedCall(800, () => {
 				return this.scene.start("DungeonEntrance2Scene"
-					, {entrance: this.entrance, hp: 5, sword: this.has_sword,
-                        boss_dead: this.boss_dead, door: this.door_opened, money: this.money - 2});
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead,
+						door: this.door_opened, money: this.money - 2, key: this.has_key});
 			})
 		}
 
@@ -354,7 +355,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		if (Phaser.Input.Keyboard.JustDown(this.key_dash))
             this.dashed = true;
 
-		if (this.player.is_attacking && !this.door_opened && this.player.y <= 180 && this.has_sword)
+		if (this.player.is_attacking && this.has_key && !this.door_opened && this.player.y <= 180 && this.has_sword)
 			this.open_door();
 
 		this.shadow.x = this.player.x;
@@ -527,7 +528,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
 					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
-                    money: this.money });
+                    money: this.money, key: this.has_key });
 			})
 		}
 	}

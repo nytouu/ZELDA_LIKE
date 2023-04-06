@@ -21,6 +21,7 @@ export class ShopScene extends Phaser.Scene {
 		this.hp = data.hp;
 		this.door_opened = data.door;
         this.money = data.money;
+        this.has_key = data.key;
 
 		this.game_over = false;
 	}
@@ -218,6 +219,7 @@ export class ShopScene extends Phaser.Scene {
 			this.player.direction = "front";
 
 		this.cursors = this.input.keyboard.createCursorKeys();
+        this.interact = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
 		this.input.gamepad.once('connected', function(pad) {
 			controller = pad;
@@ -229,6 +231,15 @@ export class ShopScene extends Phaser.Scene {
 
         console.log(this.player.x, this.player.y)
 		if (this.game_over) { return; }
+
+        if (Phaser.Input.Keyboard.JustDown(this.interact))
+        {
+            if(this.money >= 3)
+            {
+                this.has_key = true;
+                console.log('get key');
+            }
+        }
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
@@ -273,7 +284,7 @@ export class ShopScene extends Phaser.Scene {
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
 					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
-                    money: this.money });
+                    money: this.money, key: this.has_key });
 			})
 		}
 	}
