@@ -19,6 +19,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 	init(data)
 	{
+        this.tuto_level = data.tuto;
         this.has_key = data.key;
         this.money = data.money;
         this.has_sword = data.sword;
@@ -142,7 +143,8 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.money_ui = this.physics.add.sprite(736, 440, 'money');
 		this.money_ui.setScrollFactor(0);
 
-		this.money_text = this.add.text(746, 435, this.money + "x", {font: "monospace 11", resolution: 2});
+		this.money_text = this.add.text(746, 433, this.money + "x", {fontFamily: "scientifica",
+            fontSize: "12px", resolution: 4});
 		this.money_text.setScrollFactor(0);
 
 		if (!this.has_key)
@@ -348,7 +350,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.time.delayedCall(800, () => {
 				return this.scene.start("DungeonRoomScene"
 					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead,
-						door: this.door_opened, money: this.money - 2, key: this.has_key});
+						door: this.door_opened, money: this.money - 2, key: this.has_key, tuto: this.tuto_level});
 			})
 		}
 
@@ -554,7 +556,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
 					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
-                    money: this.money, key: this.has_key });
+                    money: this.money, key: this.has_key, tuto: this.tuto_level });
 			})
 		}
 	}

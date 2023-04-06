@@ -17,7 +17,7 @@ export class RoomScene extends Phaser.Scene{
 
 	init(data)
 	{
-
+        this.tuto_level = data.tuto;
         this.has_key = data.key;
         this.money = data.money;
         this.has_sword = data.sword;
@@ -84,11 +84,14 @@ export class RoomScene extends Phaser.Scene{
 		}
 		else
 		{
+            this.tuto_level = 1;
 			this.money = 0;
 			this.has_key = false;
 			this.player = this.physics.add.sprite(70, 48, 'player_idle_front');
 			this.player.current_anim = "player_idle_front";
 			this.player.direction = "front";
+            this.tuto_text = this.add.text(876, 620, "PRESS ARROWS TO MOVE",
+                {fontFamily: "scientifica", fontSize: "18px", resolution: 4}).setScrollFactor(0);
 		}
 		this.shadow = this.physics.add.sprite(64, 42, 'player_shadow');
 		this.shadow.setCircle(16).setOffset(0, 0);
@@ -107,7 +110,8 @@ export class RoomScene extends Phaser.Scene{
 		this.money_ui = this.physics.add.sprite(736, 440, 'money');
 		this.money_ui.setScrollFactor(0);
 
-		this.money_text = this.add.text(746, 435, this.money + "x", {font: "monospace 11", resolution: 2});
+		this.money_text = this.add.text(746, 433, this.money + "x", {fontFamily: "scientifica",
+            fontSize: "12px", resolution: 4});
 		this.money_text.setScrollFactor(0);
 
 		if (!this.has_key)
@@ -245,9 +249,6 @@ export class RoomScene extends Phaser.Scene{
 			})
 	};
 	update(){
-		// this.lifebar.x = this.player.x - 200;
-		// this.lifebar.y = this.player.y - 120;
-
 		if (this.game_over){return;}
 
 		console.log(this.money);
@@ -291,7 +292,7 @@ export class RoomScene extends Phaser.Scene{
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
 					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
-                    money: this.money, key: this.has_key });
+                    money: this.money, key: this.has_key, tuto: this.tuto_level });
 			})
 		}
 	}
@@ -422,5 +423,15 @@ export class RoomScene extends Phaser.Scene{
 					break;
 			}
 		}
+        else if (this.tuto_level == 1)
+        {
+            this.tuto_level += 1;
+            this.tweens.add({
+                targets: this.tuto_text,
+                alpha: 0,
+                duration: 500,
+                ease: 'Power2'
+            });
+        }
 	}
 };

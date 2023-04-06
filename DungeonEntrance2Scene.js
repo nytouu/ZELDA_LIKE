@@ -9,6 +9,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 	constructor(){
 		super("DungeonEntrance2Scene");
 
+		this.tuto_text;
 		this.game_over = false;
 		this.controller = false;
 		this.canGoOut = true;
@@ -20,6 +21,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 
 	init(data)
 	{
+        this.tuto_level = data.tuto;
         this.money = data.money;
 		this.has_sword = data.sword;
         this.boss_dead = data.boss_dead;
@@ -154,7 +156,8 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		this.money_ui = this.physics.add.sprite(736, 440, 'money');
 		this.money_ui.setScrollFactor(0);
 
-		this.money_text = this.add.text(746, 435, this.money, {font: "monospace 11", resolution: 2});
+		this.money_text = this.add.text(746, 433, this.money + "x", {fontFamily: "scientifica",
+            fontSize: "12px", resolution: 4});
 		this.money_text.setScrollFactor(0);
 
 		if (!this.has_key)
@@ -356,7 +359,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 			this.time.delayedCall(800, () => {
 				return this.scene.start("DungeonEntrance2Scene"
 					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead,
-						door: this.door_opened, money: this.money - 2, key: this.has_key});
+						door: this.door_opened, money: this.money - 2, key: this.has_key, tuto: this.tuto_level});
 			})
 		}
 
@@ -365,13 +368,47 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		if (Phaser.Input.Keyboard.JustDown(this.key_dash))
             this.dashed = true;
 
-		if (this.player.is_attacking && this.has_key && !this.door_opened && this.player.y <= 180 && this.has_sword)
-			this.open_door();
+
+
+		if (this.has_sword && this.player.y <= 180 && this.has_key && !this.door_opened)
+		{
+			console.log(this.tuto_level);
+			if (this.tuto_level == 4)
+			{
+				this.tuto_level += 1;
+
+				// pourquoi ça marche pas ?????????????
+				this.tuto_text = this.add.text(894, 620, "PRESS C TO OPEN DOOR",
+					{fontFamily: "scientifica", fontSize: "18px", resolution: 4}).setAlpha(0).setDepth(100);
+
+				this.time.delayedCall(100, () => {
+					this.tweens.add({
+						targets: this.tuto_text,
+						alpha: 1,
+						duration: 500,
+						ease: 'Power2'
+					});
+				}, this)
+			}
+
+			if (this.player.is_attacking)
+			{
+				this.open_door();
+
+				if (this.tuto_level == 5)
+				{
+					this.tweens.add({
+						targets: this.tuto_text,
+						alpha: 0,
+						duration: 500,
+						ease: 'Power2'
+					});
+				}
+			}
+		}
 
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
-
-		console.log(this.player.x, this.player.y);
 
 		this.background4.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background4.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
@@ -538,7 +575,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
 					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
-                    money: this.money, key: this.has_key });
+                    money: this.money, key: this.has_key, tuto: this.tuto_level });
 			})
 		}
 	}

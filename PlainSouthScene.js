@@ -9,6 +9,7 @@ export class PlainSouthScene extends Phaser.Scene{
 	constructor(){
 		super("PlainSouthScene");
 
+		this.tuto_text;
 		this.controller = false;
 		this.canGoOut = true;
 		this.click = false;
@@ -18,6 +19,7 @@ export class PlainSouthScene extends Phaser.Scene{
 
 	init(data)
 	{
+        this.tuto_level = data.tuto;
         this.has_key = data.key;
         this.money = data.money;
         this.has_sword = data.sword;
@@ -159,7 +161,8 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.money_ui = this.physics.add.sprite(736, 440, 'money');
 		this.money_ui.setScrollFactor(0);
 
-		this.money_text = this.add.text(746, 435, this.money + "x", {font: "monospace 11", resolution: 2});
+		this.money_text = this.add.text(746, 433, this.money + "x", {fontFamily: "scientifica",
+            fontSize: "12px", resolution: 4});
 		this.money_text.setScrollFactor(0);
 
 		if (!this.has_key)
@@ -351,13 +354,26 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.time.delayedCall(800, () => {
 				return this.scene.start("PlainSouthScene"
 					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead,
-						door: this.door_opened, money: this.money - 2, key: this.has_key});
+						door: this.door_opened, money: this.money - 2, key: this.has_key, tuto: this.tuto_level});
 			})
 		}
 
 		if (Phaser.Input.Keyboard.JustDown(this.key_attack))
-            this.click = true;
-			if (Phaser.Input.Keyboard.JustDown(this.key_dash))
+		{
+			this.click = true;
+			if (this.tuto_level == 3 && this.player.can_attack)
+			{
+				this.tuto_level += 1;
+				this.tweens.add({
+					targets: this.tuto_text,
+					alpha: 0,
+					duration: 500,
+					ease: 'Power2'
+				});
+			}
+		}
+
+		if (Phaser.Input.Keyboard.JustDown(this.key_dash))
             this.dashed = true;
 
 		if (this.has_sword && !this.spider_once)
@@ -388,6 +404,8 @@ export class PlainSouthScene extends Phaser.Scene{
 			{
 				this.click = false;
 				this.player_attack(this.player.direction, this.dashx, this.dashy)
+				console.log(this.tuto_level)
+
 			}
 		}
 
@@ -561,7 +579,7 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
 					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
-                    money: this.money, key: this.has_key });
+                    money: this.money, key: this.has_key, tuto: this.tuto_level });
 			})
 		}
 	}
@@ -834,6 +852,18 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.has_sword = true;
 
 			this.click = true;
+
+            this.tuto_text = this.add.text(880, 620, "PRESS C TO ATTACK",
+                {fontFamily: "scientifica", fontSize: "18px", resolution: 4}).setScrollFactor(0).setAlpha(0);
+
+			this.time.delayedCall(100, () => {
+				this.tweens.add({
+					targets: this.tuto_text,
+					alpha: 1,
+					duration: 500,
+					ease: 'Power2'
+				});
+			},this)
 		}
 	}
 };
