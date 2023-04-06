@@ -18,6 +18,7 @@ export class PlainSouthScene extends Phaser.Scene{
 
 	init(data)
 	{
+        this.money = data.money;
         this.has_sword = data.sword;
         this.boss_dead = data.boss_dead;
 		this.entrance = data.entrance;
@@ -39,6 +40,8 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.load.image('plain_south_above', 'assets/plain_south_above.png');
 
 		this.load.image('sword', 'assets/sword_on_ground.png');
+
+		this.load.image('money', 'assets/money.png');
 
 		this.load.spritesheet('mini_spider_idle','assets/mini_spider_idle.png',
 			{ frameWidth: 18, frameHeight: 18 });
@@ -80,6 +83,7 @@ export class PlainSouthScene extends Phaser.Scene{
 
 		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
 		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+		this.money_drops = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
 		const level_map = this.add.tilemap("plain_south_map");
 		const tiles_above = level_map.addTilesetImage(
@@ -337,7 +341,7 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.time.delayedCall(800, () => {
 				return this.scene.start("PlainSouthScene"
 					, {entrance: this.entrance, hp: 5, sword: this.has_sword,
-                        boss_dead: this.boss_dead, door: this.door_opened});
+                        boss_dead: this.boss_dead, door: this.door_opened, money: this.money - 2});
 			})
 		}
 
@@ -352,7 +356,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
-		console.log(this.player.x, this.player.y);
+		// console.log(this.player.x, this.player.y);
 
 		this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;
@@ -396,6 +400,17 @@ export class PlainSouthScene extends Phaser.Scene{
 			}, this)
 		}
 
+		this.money_drops.children.each(function (drop) {
+			const bounds_player = this.player.getBounds();
+			const bounds_drop = drop.getBounds();
+
+			if (Phaser.Geom.Intersects.RectangleToRectangle(bounds_player, bounds_drop))
+			{
+				this.money += 1;
+				console.log(this.money);
+				drop.destroy();
+			}	
+		},this)
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 			this.handle_input();
@@ -534,7 +549,8 @@ export class PlainSouthScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
-					sword: this.has_sword, boss_dead: this.boss_dead });
+					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
+                    money: this.money });
 			})
 		}
 	}
@@ -649,6 +665,8 @@ export class PlainSouthScene extends Phaser.Scene{
 							duration: 500,
 							ease: 'Power2'
 						});
+						this.spawn_money_drop(spider.x, spider.y);
+
 						this.time.delayedCall(400, () => {
 							spider.destroy();
 						})
@@ -658,6 +676,16 @@ export class PlainSouthScene extends Phaser.Scene{
 		}, this)
 	}
 
+	spawn_money_drop(x, y)
+	{
+		if (Math.floor(Math.random() * 2) == 0)
+		{
+			const drop = this.money_drops.create(x, y, 'money');
+			this.layer.moveDown(drop);
+			this.layer.moveDown(drop);
+		}
+	}
+	
 	handle_input()
 	{
 		if (this.cursors.up.isDown && this.cursors.left.isDown &&

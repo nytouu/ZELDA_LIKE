@@ -17,6 +17,8 @@ export class RoomScene extends Phaser.Scene{
 
 	init(data)
 	{
+
+        this.money = data.money;
         this.has_sword = data.sword;
         this.boss_dead = data.boss_dead;
 		this.entrance = data.entrance;
@@ -80,6 +82,7 @@ export class RoomScene extends Phaser.Scene{
 		}
 		else
 		{
+			this.money = 0;
 			this.player = this.physics.add.sprite(70, 48, 'player_idle_front');
 			this.player.current_anim = "player_idle_front";
 			this.player.direction = "front";
@@ -233,6 +236,7 @@ export class RoomScene extends Phaser.Scene{
 
 		if (this.game_over){return;}
 
+		console.log(this.money);
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
@@ -262,8 +266,6 @@ export class RoomScene extends Phaser.Scene{
 		this.player.can_dash = false;
 		setTimeout(this.cd_dash, 200, this.player);
 		setTimeout(this.cd_can_dash, 1000, this.player);
-
-		// console.log("dash")
 	}
 
 	switch_scene(scene, entrance)
@@ -274,7 +276,8 @@ export class RoomScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(400, 0, 0, 0);
 			this.time.delayedCall(500, () => {
 				this.scene.start(scene, {entrance: entrance, xpos: this.player.x, hp: this.hp, 
-					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened });
+					sword: this.has_sword, boss_dead: this.boss_dead, door: this.door_opened,
+                    money: this.money });
 			})
 		}
 	}
