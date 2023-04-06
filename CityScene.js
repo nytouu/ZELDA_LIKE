@@ -150,7 +150,7 @@ export class CityScene extends Phaser.Scene
 		this.physics.add.collider(this.player, city_map_above);
 		this.physics.add.collider(this.player, city_map_under);
 
-		this.cameras.main.startFollow(this.player);
+		this.cameras.main.startFollow(this.player).setLerp(0.15);
 		this.cameras.main.setZoom(4);
 
 		this.anims.create({

@@ -170,7 +170,7 @@ export class PlainNorthScene extends Phaser.Scene{
 
 		this.physics.add.overlap(this.player, this.spiders, this.damage_player, null, this);
 
-		this.cameras.main.startFollow(this.player);
+		this.cameras.main.startFollow(this.player).setLerp(0.15);
 		this.cameras.main.setZoom(4);
 
 		this.anims.create({

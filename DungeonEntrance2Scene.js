@@ -170,7 +170,7 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
 		if (!this.door_opened)
 			this.door_collision = this.physics.add.collider(this.player, this.door);
 
-		this.cameras.main.startFollow(this.player);
+		this.cameras.main.startFollow(this.player).setLerp(0.15);
 		this.cameras.main.setZoom(4);
 
 		this.anims.create({
