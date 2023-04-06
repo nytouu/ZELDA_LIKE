@@ -129,8 +129,8 @@ export class CityScene extends Phaser.Scene
 		const layer = this.add.layer();
 		layer.add([ city_map_under, this.shadow, this.player, city_map_above ])
 
-		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
-		this.lifebar.body.allowGravity = false;
+		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
+		this.lifebar.setScrollFactor(0);
 
 		city_map_above.setCollisionByProperty({isSolid : true});
 		city_map_under.setCollisionByProperty({isSolid : true});
@@ -299,9 +299,6 @@ export class CityScene extends Phaser.Scene
 	};
 	update()
 	{
-		this.lifebar.x = this.player.x - 200;
-		this.lifebar.y = this.player.y - 120;
-
 		if (this.game_over)
 		{
 			this.cameras.main.fadeOut(700, 0, 0, 0);

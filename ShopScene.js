@@ -83,8 +83,8 @@ export class ShopScene extends Phaser.Scene {
 		const layer = this.add.layer();
 		layer.add([shop_layer, this.shopkeeper, this.shadow, this.player])
 
-		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
-		this.lifebar.body.allowGravity = false;
+		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
+		this.lifebar.setScrollFactor(0);
 
 		shop_layer.setCollisionByProperty({ isSolid: true });
 		this.player.setCollideWorldBounds(true);
@@ -226,9 +226,6 @@ export class ShopScene extends Phaser.Scene {
 		})
 	};
 	update() {
-		this.lifebar.x = this.player.x - 200;
-		this.lifebar.y = this.player.y - 120;
-
         console.log(this.player.x, this.player.y)
 		if (this.game_over) { return; }
 

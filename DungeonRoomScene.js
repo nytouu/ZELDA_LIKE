@@ -132,8 +132,8 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.layer = this.add.layer();
 		this.layer.add([ this.layer_under, this.shadow, this.player, this.layer_above, this.fire ])
 
-		this.lifebar = this.physics.add.sprite(-10, -10, 'lifebar');
-		this.lifebar.body.allowGravity = false;
+		this.lifebar = this.physics.add.sprite(760, 420, 'lifebar');
+		this.lifebar.setScrollFactor(0);
 
 		this.layer_under.setCollisionByProperty({ isSolid: true });
 		this.layer_above.setCollisionByProperty({ isSolid: true });
@@ -329,9 +329,6 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.input.on('pointerdown', () => this.click = true);
 	};
 	update(){
-		this.lifebar.x = this.player.x - 200;
-		this.lifebar.y = this.player.y - 120;
-
 		if (this.game_over)
 		{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
