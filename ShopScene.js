@@ -1,6 +1,7 @@
 const SPEED = 80;
 const MAP_SIZE_X = 112;
 const MAP_SIZE_Y = 80;
+const MONEY_REQUIRED = 5;
 
 export class ShopScene extends Phaser.Scene {
 
@@ -98,8 +99,19 @@ export class ShopScene extends Phaser.Scene {
 		this.money_text = this.add.text(746, 435, this.money + "x", {font: "monospace 11", resolution: 2});
 		this.money_text.setScrollFactor(0);
 
+        this.prompt = this.physics.add.group();
+        this.prompt.create(this.shopkeeper.x - 20, this.shopkeeper.y - 30, "money");
+        this.prompt.create(this.shopkeeper.x + 25, this.shopkeeper.y - 30, "key");
+        this.prompt_text = this.add.text(this.shopkeeper.x - 10, this.shopkeeper.y - 35,
+            this.money + "/5 =", {font: "monospace 11", resolution: 2}, this.prompt);
+
 		if (!this.has_key)
-			this.key.setVisible(false);
+            this.key.setVisible(false);
+        else
+        {
+            this.prompt.setVisible(false);
+            this.prompt_text.setVisible(false);
+        }
 
 		shop_layer.setCollisionByProperty({ isSolid: true });
 		this.player.setCollideWorldBounds(true);
@@ -241,16 +253,17 @@ export class ShopScene extends Phaser.Scene {
 		})
 	};
 	update() {
-        console.log(this.player.x, this.player.y)
+        // console.log(this.player.x, this.player.y)
 		if (this.game_over) { return; }
 
         if (Phaser.Input.Keyboard.JustDown(this.interact))
         {
-            if(this.money >= 3)
+            if(this.money >= MONEY_REQUIRED)
             {
                 this.has_key = true;
 				this.key.setVisible(true);
-                console.log('get key');
+                this.prompt.setVisible(false);
+                this.prompt_text.setVisible(false);
             }
         }
 
