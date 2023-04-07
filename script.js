@@ -1,12 +1,12 @@
-import { CityScene as CityScene } from "./CityScene.js";
-import { MenuScene as MenuScene } from "./MenuScene.js";
-import { RoomScene as RoomScene } from "./RoomScene.js";
-import { PlainNorthScene as PlainNorthScene } from "./PlainNorthScene.js";
-import { PlainSouthScene as PlainSouthScene } from "./PlainSouthScene.js";
-import { ShopScene as ShopScene } from "./ShopScene.js";
-import { DungeonEntranceScene as DungeonEntranceScene } from "./DungeonEntranceScene.js";
-import { DungeonEntrance2Scene as DungeonEntrance2Scene } from "./DungeonEntrance2Scene.js";
-import { DungeonRoomScene as DungeonRoomScene } from "./DungeonRoomScene.js";
+import { CityScene as CityScene } from "./assets/scripts/CityScene.js";
+import { MenuScene as MenuScene } from "./assets/scripts/MenuScene.js";
+import { RoomScene as RoomScene } from "./assets/scripts/RoomScene.js";
+import { PlainNorthScene as PlainNorthScene } from "./assets/scripts/PlainNorthScene.js";
+import { PlainSouthScene as PlainSouthScene } from "./assets/scripts/PlainSouthScene.js";
+import { ShopScene as ShopScene } from "./assets/scripts/ShopScene.js";
+import { DungeonEntranceScene as DungeonEntranceScene } from "./assets/scripts/DungeonEntranceScene.js";
+import { DungeonEntrance2Scene as DungeonEntrance2Scene } from "./assets/scripts/DungeonEntrance2Scene.js";
+import { DungeonRoomScene as DungeonRoomScene } from "./assets/scripts/DungeonRoomScene.js";
 
 var config =
 {
