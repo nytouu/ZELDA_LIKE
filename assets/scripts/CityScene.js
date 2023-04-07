@@ -34,46 +34,49 @@ export class CityScene extends Phaser.Scene
 		this.hp = data.hp;
 
 		this.game_over = false;
+
+		if (this.money < 0)
+			this.money = 0;
 	}
 
 	preload()
 	{
 
-		this.load.image('background', 'assets/background.png');
-		this.load.image('player_shadow', 'assets/player_shadow.png');
-		this.load.image('city_above', 'assets/city_above_player.png');
-		this.load.image('city_under', 'assets/city_under_player.png');
-		this.load.spritesheet('player_idle_back', 'assets/player_idle_back.png',
+		this.load.image('background', 'assets/imgs/background.png');
+		this.load.image('player_shadow', 'assets/imgs/player_shadow.png');
+		this.load.image('city_above', 'assets/imgs/city_above_player.png');
+		this.load.image('city_under', 'assets/imgs/city_under_player.png');
+		this.load.spritesheet('player_idle_back', 'assets/imgs/player_idle_back.png',
 			{frameWidth : 32, frameHeight : 32});
 		this.load.spritesheet('player_idle_front',
-			'assets/player_idle_front.png',
+			'assets/imgs/player_idle_front.png',
 			{frameWidth : 32, frameHeight : 32});
 		this.load.spritesheet('player_idle_right',
-			'assets/player_idle_right.png',
+			'assets/imgs/player_idle_right.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_idle_left', 'assets/player_idle_left.png',
+		this.load.spritesheet('player_idle_left', 'assets/imgs/player_idle_left.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_run_back', 'assets/player_run_back.png',
+		this.load.spritesheet('player_run_back', 'assets/imgs/player_run_back.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_run_front', 'assets/player_run_front.png',
+		this.load.spritesheet('player_run_front', 'assets/imgs/player_run_front.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_run_right', 'assets/player_run_right.png',
+		this.load.spritesheet('player_run_right', 'assets/imgs/player_run_right.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_run_left', 'assets/player_run_left.png',
-			{frameWidth : 32, frameHeight : 32});
-
-		this.load.spritesheet('player_attack_front', 'assets/player_attack_front.png',
-			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_back', 'assets/player_attack_back.png',
-			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_left', 'assets/player_attack_left.png',
-			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_right', 'assets/player_attack_right.png',
+		this.load.spritesheet('player_run_left', 'assets/imgs/player_run_left.png',
 			{frameWidth : 32, frameHeight : 32});
 
-		this.load.spritesheet('lifebar', 'assets/lifebar.png',
+		this.load.spritesheet('player_attack_front', 'assets/imgs/player_attack_front.png',
+			{frameWidth : 32, frameHeight : 32});
+		this.load.spritesheet('player_attack_back', 'assets/imgs/player_attack_back.png',
+			{frameWidth : 32, frameHeight : 32});
+		this.load.spritesheet('player_attack_left', 'assets/imgs/player_attack_left.png',
+			{frameWidth : 32, frameHeight : 32});
+		this.load.spritesheet('player_attack_right', 'assets/imgs/player_attack_right.png',
+			{frameWidth : 32, frameHeight : 32});
+
+		this.load.spritesheet('lifebar', 'assets/imgs/lifebar.png',
 			{ frameWidth: 64, frameHeight: 16 });
-		this.load.tilemapTiledJSON("city_map", "assets/city_map.json");
+		this.load.tilemapTiledJSON("city_map", "assets/maps/city_map.json");
 	}
 	create()
 	{

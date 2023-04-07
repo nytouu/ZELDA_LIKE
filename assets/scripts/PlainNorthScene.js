@@ -34,44 +34,47 @@ export class PlainNorthScene extends Phaser.Scene{
 
 		this.spider_once = false;
 		this.game_over = false;
+
+		if (this.money < 0)
+			this.money = 0;
 	}
 
 	preload(){
 
-		this.load.image('background2', 'assets/background2.png');
-		this.load.image('money', 'assets/money.png');
-		this.load.image('player_shadow', 'assets/player_shadow.png');
-		this.load.image('plain_north_under', 'assets/plain_north_under.png')
-		this.load.image('plain_north_above', 'assets/plain_north_above.png')
-		this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
+		this.load.image('background2', 'assets/imgs/background2.png');
+		this.load.image('money', 'assets/imgs/money.png');
+		this.load.image('player_shadow', 'assets/imgs/player_shadow.png');
+		this.load.image('plain_north_under', 'assets/imgs/plain_north_under.png')
+		this.load.image('plain_north_above', 'assets/imgs/plain_north_above.png')
+		this.load.spritesheet('player_idle_back','assets/imgs/player_idle_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
+		this.load.spritesheet('player_idle_front','assets/imgs/player_idle_front.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_idle_right','assets/player_idle_right.png',
+		this.load.spritesheet('player_idle_right','assets/imgs/player_idle_right.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_idle_left','assets/player_idle_left.png',
+		this.load.spritesheet('player_idle_left','assets/imgs/player_idle_left.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_back','assets/player_run_back.png',
+		this.load.spritesheet('player_run_back','assets/imgs/player_run_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_front','assets/player_run_front.png',
+		this.load.spritesheet('player_run_front','assets/imgs/player_run_front.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_right','assets/player_run_right.png',
+		this.load.spritesheet('player_run_right','assets/imgs/player_run_right.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_left','assets/player_run_left.png',
+		this.load.spritesheet('player_run_left','assets/imgs/player_run_left.png',
 			{ frameWidth: 32, frameHeight: 32 });
 
-		this.load.spritesheet('player_attack_front', 'assets/player_attack_front.png',
+		this.load.spritesheet('player_attack_front', 'assets/imgs/player_attack_front.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_back', 'assets/player_attack_back.png',
+		this.load.spritesheet('player_attack_back', 'assets/imgs/player_attack_back.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_left', 'assets/player_attack_left.png',
+		this.load.spritesheet('player_attack_left', 'assets/imgs/player_attack_left.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_right', 'assets/player_attack_right.png',
+		this.load.spritesheet('player_attack_right', 'assets/imgs/player_attack_right.png',
 			{frameWidth : 32, frameHeight : 32});
 
-		this.load.spritesheet('lifebar','assets/lifebar.png',
+		this.load.spritesheet('lifebar','assets/imgs/lifebar.png',
 			{ frameWidth: 64, frameHeight: 16 });
-		this.load.tilemapTiledJSON("plain_north_map", "assets/plain_north_map.json");
+		this.load.tilemapTiledJSON("plain_north_map", "assets/maps/plain_north_map.json");
 	}
 	create(){
 		this.background2 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background2');
@@ -330,7 +333,7 @@ export class PlainNorthScene extends Phaser.Scene{
 			this.cameras.main.fadeOut(700, 0, 0, 0);
 			this.time.delayedCall(800, () => {
 				return this.scene.start("PlainNorthScene"
-					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead,
+					, {entrance: this.entrance, hp: 5, sword: this.has_sword, boss_dead: this.boss_dead, xpos: this.xpos,
 						door: this.door_opened, money: this.money - 2, key: this.has_key, tuto: this.tuto_level});
 			})
 		}
@@ -346,7 +349,7 @@ export class PlainNorthScene extends Phaser.Scene{
 		this.shadow.x = this.player.x;
 		this.shadow.y = this.player.y;
 
-		console.log(this.player.x, this.player.y);
+		// console.log(this.player.x, this.player.y);
 
 		this.background2.x = (((MAP_SIZE_X / 2) * (this.player.x / MAP_SIZE_X)) * 1) + 100 ;
 		this.background2.y = (((MAP_SIZE_Y / 2) * (this.player.y / MAP_SIZE_Y)) * 1) + 100 ;

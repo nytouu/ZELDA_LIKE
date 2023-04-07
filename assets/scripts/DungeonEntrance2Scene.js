@@ -33,52 +33,55 @@ export class DungeonEntrance2Scene extends Phaser.Scene{
         this.has_key = data.key;
 
 		this.game_over = false;
+
+		if (this.money < 0)
+			this.money = 0;
 	}
 
 	preload(){
 
-		this.load.image('background4', 'assets/background4.png');
-		this.load.image('player_shadow', 'assets/player_shadow.png');
-		this.load.image('dungeon_entrance2_above', 'assets/dungeon_entrance2_above.png')
-		this.load.image('dungeon_entrance2_under', 'assets/dungeon_entrance2_under.png')
+		this.load.image('background4', 'assets/imgs/background4.png');
+		this.load.image('player_shadow', 'assets/imgs/player_shadow.png');
+		this.load.image('dungeon_entrance2_above', 'assets/imgs/dungeon_entrance2_above.png')
+		this.load.image('dungeon_entrance2_under', 'assets/imgs/dungeon_entrance2_under.png')
 
-		this.load.image('money', 'assets/money.png');
+		this.load.image('money', 'assets/imgs/money.png');
 
-		this.load.spritesheet('player_idle_back','assets/player_idle_back.png',
+		this.load.spritesheet('player_idle_back','assets/imgs/player_idle_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_idle_front','assets/player_idle_front.png',
+		this.load.spritesheet('player_idle_front','assets/imgs/player_idle_front.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_idle_right','assets/player_idle_right.png',
+		this.load.spritesheet('player_idle_right','assets/imgs/player_idle_right.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_idle_left','assets/player_idle_left.png',
+		this.load.spritesheet('player_idle_left','assets/imgs/player_idle_left.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_back','assets/player_run_back.png',
+		this.load.spritesheet('player_run_back','assets/imgs/player_run_back.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_front','assets/player_run_front.png',
+		this.load.spritesheet('player_run_front','assets/imgs/player_run_front.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_right','assets/player_run_right.png',
+		this.load.spritesheet('player_run_right','assets/imgs/player_run_right.png',
 			{ frameWidth: 32, frameHeight: 32 });
-		this.load.spritesheet('player_run_left','assets/player_run_left.png',
+		this.load.spritesheet('player_run_left','assets/imgs/player_run_left.png',
 			{ frameWidth: 32, frameHeight: 32 });
 
-		this.load.spritesheet('player_attack_front', 'assets/player_attack_front.png',
+		this.load.spritesheet('player_attack_front', 'assets/imgs/player_attack_front.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_back', 'assets/player_attack_back.png',
+		this.load.spritesheet('player_attack_back', 'assets/imgs/player_attack_back.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_left', 'assets/player_attack_left.png',
+		this.load.spritesheet('player_attack_left', 'assets/imgs/player_attack_left.png',
 			{frameWidth : 32, frameHeight : 32});
-		this.load.spritesheet('player_attack_right', 'assets/player_attack_right.png',
+		this.load.spritesheet('player_attack_right', 'assets/imgs/player_attack_right.png',
 			{frameWidth : 32, frameHeight : 32});
 
-		this.load.spritesheet('fire', 'assets/fire.png',
+		this.load.spritesheet('fire', 'assets/imgs/fire.png',
 			{frameWidth : 12, frameHeight : 12});
 
-		this.load.spritesheet('door', 'assets/dungeon_entrance2_door.png',
+		this.load.spritesheet('door', 'assets/imgs/dungeon_entrance2_door.png',
 			{frameWidth: 48, frameHeight: 48});
 
-		this.load.spritesheet('lifebar','assets/lifebar.png',
+		this.load.spritesheet('lifebar','assets/imgs/lifebar.png',
 			{ frameWidth: 64, frameHeight: 16 });
-		this.load.tilemapTiledJSON("dungeon_entrance2_map", "assets/dungeon_entrance2.json");
+		this.load.tilemapTiledJSON("dungeon_entrance2_map", "assets/maps/dungeon_entrance2.json");
 	}
 	create(){
 		this.background4 = this.add.image(MAP_SIZE_X / 2, MAP_SIZE_Y / 2, 'background4');
