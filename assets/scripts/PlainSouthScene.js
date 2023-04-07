@@ -48,6 +48,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.load.image('sword', 'assets/imgs/sword_on_ground.png');
 
 		this.load.image('money', 'assets/imgs/money.png');
+		this.load.image('heart', 'assets/imgs/heart.png');
 
 		this.load.spritesheet('mini_spider_idle','assets/imgs/mini_spider_idle.png',
 			{ frameWidth: 18, frameHeight: 18 });
@@ -90,6 +91,7 @@ export class PlainSouthScene extends Phaser.Scene{
 		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
 		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 		this.money_drops = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+		this.heart_drops = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
 		const level_map = this.add.tilemap("plain_south_map");
 		const tiles_above = level_map.addTilesetImage(
@@ -317,28 +319,7 @@ export class PlainSouthScene extends Phaser.Scene{
 			repeat: 0
 		});
 
-		switch (this.hp)
-		{
-			case 5:
-				this.lifebar.anims.play('life5', true);
-				break;
-			case 4:
-				this.lifebar.anims.play('life4', true);
-				break;
-			case 3:
-				this.lifebar.anims.play('life3', true);
-				break;
-			case 2:
-				this.lifebar.anims.play('life2', true);
-				break;
-			case 1:
-				this.lifebar.anims.play('life1', true);
-				break;
-			case 0:
-				this.lifebar.anims.play('life0', true);
-				break;
-		}
-
+		this.update_lifebar();
 
 		this.cursors = this.input.keyboard.createCursorKeys();
         this.key_dash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
@@ -440,6 +421,20 @@ export class PlainSouthScene extends Phaser.Scene{
 				this.money += 1;
 				this.money_text.setText(this.money + "x");
 				console.log(this.money);
+				drop.destroy();
+			}	
+		},this)
+
+		this.heart_drops.children.each(function (drop) {
+			const bounds_player = this.player.getBounds();
+			const bounds_drop = drop.getBounds();
+
+			if (Phaser.Geom.Intersects.RectangleToRectangle(bounds_player, bounds_drop))
+			{
+				if (this.hp < 5)
+					this.hp += 1;
+
+				this.update_lifebar()
 				drop.destroy();
 			}	
 		},this)
@@ -698,6 +693,7 @@ export class PlainSouthScene extends Phaser.Scene{
 							ease: 'Power2'
 						});
 						this.spawn_money_drop(spider.x, spider.y);
+						this.spawn_heart_drop(spider.x, spider.y - 5);
 
 						this.time.delayedCall(400, () => {
 							spider.destroy();
@@ -713,6 +709,16 @@ export class PlainSouthScene extends Phaser.Scene{
 		if (Math.floor(Math.random() * 2) == 0)
 		{
 			const drop = this.money_drops.create(x, y, 'money');
+			this.layer.moveDown(drop);
+			this.layer.moveDown(drop);
+		}
+	}
+
+	spawn_heart_drop(x, y)
+	{
+		if (Math.floor(Math.random() * 4) == 0)
+		{
+			const drop = this.heart_drops.create(x, y, 'heart');
 			this.layer.moveDown(drop);
 			this.layer.moveDown(drop);
 		}
@@ -867,6 +873,30 @@ export class PlainSouthScene extends Phaser.Scene{
 					ease: 'Power2'
 				});
 			},this)
+		}
+	}
+	update_lifebar()
+	{
+		switch (this.hp)
+		{
+			case 5:
+				this.lifebar.anims.play('life5', true);
+				break;
+			case 4:
+				this.lifebar.anims.play('life4', true);
+				break;
+			case 3:
+				this.lifebar.anims.play('life3', true);
+				break;
+			case 2:
+				this.lifebar.anims.play('life2', true);
+				break;
+			case 1:
+				this.lifebar.anims.play('life1', true);
+				break;
+			case 0:
+				this.lifebar.anims.play('life0', true);
+				break;
 		}
 	}
 };

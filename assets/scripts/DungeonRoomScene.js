@@ -44,6 +44,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 		this.load.image('player_shadow', 'assets/imgs/player_shadow.png');
 		this.load.image('dungeon_room', 'assets/imgs/dungeon_room.png')
 		this.load.image('money', 'assets/imgs/money.png');
+		this.load.image('heart', 'assets/imgs/heart.png');
 
 		this.load.spritesheet('mini_spider_idle','assets/imgs/mini_spider_idle.png',
 			{ frameWidth: 18, frameHeight: 18 });
@@ -91,6 +92,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 
 		this.dash_trail = this.physics.add.group({ collideWorldBounds: true });
 		this.spiders = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
+		this.heart_drops = this.physics.add.group({ allowGravity: false, collideWorldBounds: true });
 
         this.fire = this.physics.add.sprite(232, 168, 'fire');
 
@@ -313,28 +315,8 @@ export class DungeonRoomScene extends Phaser.Scene{
 		});
 
         this.fire.anims.play('fire_play', true);
-		switch (this.hp)
-		{
-			case 5:
-				this.lifebar.anims.play('life5', true);
-				break;
-			case 4:
-				this.lifebar.anims.play('life4', true);
-				break;
-			case 3:
-				this.lifebar.anims.play('life3', true);
-				break;
-			case 2:
-				this.lifebar.anims.play('life2', true);
-				break;
-			case 1:
-				this.lifebar.anims.play('life1', true);
-				break;
-			case 0:
-				this.lifebar.anims.play('life0', true);
-				break;
-		}
 
+		this.update_lifebar();
 
 		this.cursors = this.input.keyboard.createCursorKeys();
         this.key_dash = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
@@ -346,6 +328,7 @@ export class DungeonRoomScene extends Phaser.Scene{
 			})
 		this.input.on('pointerdown', () => this.click = true);
 	};
+
 	update(){
 		if (this.game_over)
 		{
@@ -420,6 +403,20 @@ export class DungeonRoomScene extends Phaser.Scene{
                     this.boss.setFlipX(true);
             }
 		}
+
+		this.heart_drops.children.each(function (drop) {
+			const bounds_player = this.player.getBounds();
+			const bounds_drop = drop.getBounds();
+
+			if (Phaser.Geom.Intersects.RectangleToRectangle(bounds_player, bounds_drop))
+			{
+				if (this.hp < 5)
+					this.hp += 1;
+
+				this.update_lifebar()
+				drop.destroy();
+			}	
+		},this)
 
 		if (!this.player.is_dashing && !this.player.is_attacking)
 			this.handle_input();
@@ -757,6 +754,8 @@ export class DungeonRoomScene extends Phaser.Scene{
 							duration: 500,
 							ease: 'Power2'
 						});
+						this.spawn_heart_drop(spider.x, spider.y - 5);
+
 						this.time.delayedCall(400, () => {
 							spider.destroy();
 						})
@@ -894,6 +893,41 @@ export class DungeonRoomScene extends Phaser.Scene{
 					this.player.anims.play('idle_right', true);
 					break;
 			}
+		}
+	}
+
+	spawn_heart_drop(x, y)
+	{
+		if (Math.floor(Math.random() * 4) == 0)
+		{
+			const drop = this.heart_drops.create(x, y, 'heart');
+			this.layer.moveDown(drop);
+			this.layer.moveDown(drop);
+		}
+	}
+
+	update_lifebar()
+	{
+		switch (this.hp)
+		{
+			case 5:
+				this.lifebar.anims.play('life5', true);
+				break;
+			case 4:
+				this.lifebar.anims.play('life4', true);
+				break;
+			case 3:
+				this.lifebar.anims.play('life3', true);
+				break;
+			case 2:
+				this.lifebar.anims.play('life2', true);
+				break;
+			case 1:
+				this.lifebar.anims.play('life1', true);
+				break;
+			case 0:
+				this.lifebar.anims.play('life0', true);
+				break;
 		}
 	}
 };
