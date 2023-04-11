@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/nytouu/ZELDA_LIKE/issues"
   },
-  "homepage": "https://github.com/nytouu/ZELDA_LIKE#readme"
+  "homepage": "https://github.com/nytouu/ZELDA_LIKE#readme",
+  "devDependencies": {
+    "electron": "^24.0.0"
+  }
 }
