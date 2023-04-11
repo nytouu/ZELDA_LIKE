@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/nytouu/ZELDA_LIKE#readme",
   "devDependencies": {
-    "electron": "^24.0.0"
+    "electron": "^24.0.0",
+    "electron-packager": "^17.1.1"
   }
 }
